@@ -8,6 +8,7 @@ packages = []
 [tool.poetry.dependencies]
 python = "^3.12"
 Django = "^5.0"
+django-admin-interface = "^0.32"
 djangorestframework = "^3.14"
 djangorestframework-simplejwt = "^5.3"
 django-cors-headers = "^4.3"

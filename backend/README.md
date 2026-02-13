@@ -44,3 +44,14 @@ python manage.py seed_demo
 ```
 
 Creates clinic admin `admin@therapycare.demo` / `demo123` and other demo users.
+
+## Admin theme
+
+The admin uses [django-admin-interface](https://github.com/fabiocaccamo/django-admin-interface) for a modern, customizable UI. After first setup:
+
+```bash
+python manage.py collectstatic --noinput
+python manage.py loaddata admin_interface_theme_therapycare
+```
+
+This applies the TherapyCare theme (calm teal palette). You can further customize colors, logo, and title via **Admin** → **Themes** in the admin panel.
