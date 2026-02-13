@@ -95,12 +95,27 @@ poetry run python manage.py seed_demo
 poetry run python manage.py runserver
 ```
 
+**Alternative (no Poetry)**: If Poetry is not installed (e.g. WSL without Poetry):
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser   # Create admin email + password
+python manage.py runserver
+```
+
 API: http://localhost:8000  
-Admin: http://localhost:8000/admin/  
+Admin: http://localhost:8000/admin/ (or http://localhost:5173/admin/ when frontend is running)  
 Schema: http://localhost:8000/api/schema/  
 Swagger UI: http://localhost:8000/api/docs/
 
-### Demo credentials (after `seed_demo`)
+### Admin access
+
+- **Superuser**: Run `python manage.py createsuperuser` and enter your email and password. Use this to log in at `/admin/`.
+- **Demo credentials** (after `seed_demo`):
 
 | Role        | Email                  | Password |
 |-------------|------------------------|----------|
@@ -120,7 +135,9 @@ npm install
 npm run dev
 ```
 
-App: http://localhost:5173 (proxies `/api` to backend)
+App: http://localhost:5173 (proxies `/api`, `/admin`, `/static` to backend)
+
+**Django admin via frontend**: http://localhost:5173/admin/ — use the same credentials as backend admin.
 
 ### Pre-commit & Formatting
 
