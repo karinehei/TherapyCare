@@ -17,7 +17,10 @@ export interface MeResponse {
   date_joined: string;
 }
 
-export async function login(email: string, password: string): Promise<LoginResponse> {
+export async function login(
+  email: string,
+  password: string
+): Promise<LoginResponse> {
   const res = await fetch(`${AUTH_BASE}/login/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

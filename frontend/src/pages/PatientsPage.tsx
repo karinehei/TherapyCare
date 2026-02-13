@@ -34,9 +34,7 @@ export function PatientsPage() {
     <div className="page">
       <div className="page-header">
         <h1 className="page-title">Patients</h1>
-        <p className="page-subtitle">
-          {data?.count ?? 0} patient(s)
-        </p>
+        <p className="page-subtitle">{data?.count ?? 0} patient(s)</p>
       </div>
 
       <div className="card">

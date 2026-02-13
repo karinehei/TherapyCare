@@ -129,7 +129,14 @@ export const referralTimelineSchema = z.object({
   id: z.number(),
   status: z.string(),
   created_at: z.string(),
-  questionnaires: z.array(z.object({ id: z.number(), type: z.string(), score: z.number().nullable(), created_at: z.string() })),
+  questionnaires: z.array(
+    z.object({
+      id: z.number(),
+      type: z.string(),
+      score: z.number().nullable(),
+      created_at: z.string(),
+    })
+  ),
   note_count: z.number(),
 });
 

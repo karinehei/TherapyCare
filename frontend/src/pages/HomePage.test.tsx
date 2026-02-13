@@ -26,9 +26,7 @@ const queryClient = new QueryClient({
 function Wrapper({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter>
-        {children}
-      </MemoryRouter>
+      <MemoryRouter>{children}</MemoryRouter>
     </QueryClientProvider>
   );
 }
@@ -41,13 +39,19 @@ describe("HomePage", () => {
       </Wrapper>
     );
 
-    expect(screen.getByRole("heading", { name: /find a therapist/i })).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/name or specialty/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /find a therapist/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/name or specialty/i)
+    ).toBeInTheDocument();
     expect(screen.getByLabelText(/specialty/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/language/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/remote only/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/^city$/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /clear filters/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /clear filters/i })
+    ).toBeInTheDocument();
   });
 
   it("has link to login", () => {
@@ -57,6 +61,9 @@ describe("HomePage", () => {
       </Wrapper>
     );
 
-    expect(screen.getByRole("link", { name: /login/i })).toHaveAttribute("href", "/login");
+    expect(screen.getByRole("link", { name: /login/i })).toHaveAttribute(
+      "href",
+      "/login"
+    );
   });
 });

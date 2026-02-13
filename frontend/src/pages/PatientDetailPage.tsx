@@ -29,8 +29,15 @@ export function PatientDetailPage() {
 
   const { data: therapistsRes } = useQuery({
     queryKey: ["therapists"],
-    queryFn: () => api.get<{ results?: { id: number; display_name: string }[] }>("/therapists/"),
-    enabled: !!id && (user?.role === "clinic_admin" || user?.role === "therapist" || user?.is_staff),
+    queryFn: () =>
+      api.get<{ results?: { id: number; display_name: string }[] }>(
+        "/therapists/"
+      ),
+    enabled:
+      !!id &&
+      (user?.role === "clinic_admin" ||
+        user?.role === "therapist" ||
+        user?.is_staff),
   });
   const therapistList = therapistsRes?.results ?? [];
 
@@ -53,11 +60,16 @@ export function PatientDetailPage() {
       setBookError(null);
     },
     onError: (err: unknown) => {
-      setBookError(err instanceof ApiError ? String(err.detail) : "Failed to book");
+      setBookError(
+        err instanceof ApiError ? String(err.detail) : "Failed to book"
+      );
     },
   });
 
-  const canBook = user?.role === "clinic_admin" || user?.role === "therapist" || user?.is_staff;
+  const canBook =
+    user?.role === "clinic_admin" ||
+    user?.role === "therapist" ||
+    user?.is_staff;
 
   if (!id) return null;
   if (isLoading) {
@@ -71,7 +83,11 @@ export function PatientDetailPage() {
     return (
       <div className="page">
         <div className="empty-state error">Patient not found.</div>
-        <Link to="/app/patients" className="btn btn-ghost" style={{ marginTop: "1rem" }}>
+        <Link
+          to="/app/patients"
+          className="btn btn-ghost"
+          style={{ marginTop: "1rem" }}
+        >
           ← Back to patients
         </Link>
       </div>
@@ -79,11 +95,18 @@ export function PatientDetailPage() {
   }
 
   const referral = data.referral_timeline ?? null;
-  const statusLabel = referral ? REFERRAL_STATUSES.find((s) => s.value === referral.status)?.label ?? referral.status : null;
+  const statusLabel = referral
+    ? (REFERRAL_STATUSES.find((s) => s.value === referral.status)?.label ??
+      referral.status)
+    : null;
 
   return (
     <div className="page">
-      <Link to="/app/patients" className="btn btn-ghost" style={{ marginBottom: "1rem" }}>
+      <Link
+        to="/app/patients"
+        className="btn btn-ghost"
+        style={{ marginBottom: "1rem" }}
+      >
         ← Back to patients
       </Link>
 
@@ -120,12 +143,24 @@ export function PatientDetailPage() {
                 <dt>Notes</dt>
                 <dd>{referral.note_count}</dd>
               </dl>
-              <Link to={`/app/referrals/${referral.id}`} className="btn btn-ghost" style={{ marginTop: "0.5rem" }}>
+              <Link
+                to={`/app/referrals/${referral.id}`}
+                className="btn btn-ghost"
+                style={{ marginTop: "0.5rem" }}
+              >
                 View referral →
               </Link>
               {referral.questionnaires.length > 0 && (
                 <div style={{ marginTop: "1rem" }}>
-                  <h4 style={{ margin: "0 0 0.5rem", fontSize: "0.875rem", color: "var(--color-text-muted)" }}>Questionnaires</h4>
+                  <h4
+                    style={{
+                      margin: "0 0 0.5rem",
+                      fontSize: "0.875rem",
+                      color: "var(--color-text-muted)",
+                    }}
+                  >
+                    Questionnaires
+                  </h4>
                   <div className="table-wrapper">
                     <table className="table">
                       <thead>
@@ -140,7 +175,9 @@ export function PatientDetailPage() {
                           <tr key={q.id}>
                             <td>{q.type.toUpperCase()}</td>
                             <td>{q.score ?? "—"}</td>
-                            <td>{new Date(q.created_at).toLocaleDateString()}</td>
+                            <td>
+                              {new Date(q.created_at).toLocaleDateString()}
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -154,7 +191,14 @@ export function PatientDetailPage() {
 
         {/* Appointments */}
         <div className="card">
-          <div className="card-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            className="card-header"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             Appointments
             {canBook && (
               <button
@@ -168,10 +212,20 @@ export function PatientDetailPage() {
           </div>
           <div className="card-body">
             {showBookForm && canBook && (
-              <div className="card" style={{ marginBottom: "1rem", background: "var(--color-bg)" }}>
+              <div
+                className="card"
+                style={{ marginBottom: "1rem", background: "var(--color-bg)" }}
+              >
                 <div className="card-body">
                   <h4 style={{ margin: "0 0 1rem" }}>New appointment</h4>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "flex-end" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "1rem",
+                      alignItems: "flex-end",
+                    }}
+                  >
                     <div className="input-group" style={{ marginBottom: 0 }}>
                       <label>Therapist</label>
                       <select
@@ -219,17 +273,28 @@ export function PatientDetailPage() {
                       type="button"
                       className="btn btn-primary"
                       onClick={() => bookMutation.mutate()}
-                      disabled={bookMutation.isPending || !bookTherapist || !bookDate}
+                      disabled={
+                        bookMutation.isPending || !bookTherapist || !bookDate
+                      }
                     >
                       {bookMutation.isPending ? "Booking…" : "Book"}
                     </button>
                   </div>
-                  {bookError && <div className="input-error-message" style={{ marginTop: "0.5rem" }}>{bookError}</div>}
+                  {bookError && (
+                    <div
+                      className="input-error-message"
+                      style={{ marginTop: "0.5rem" }}
+                    >
+                      {bookError}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
             {!data.appointments_timeline.length ? (
-              <p style={{ color: "var(--color-text-muted)" }}>No appointments yet.</p>
+              <p style={{ color: "var(--color-text-muted)" }}>
+                No appointments yet.
+              </p>
             ) : (
               <div className="table-wrapper">
                 <table className="table">
@@ -247,8 +312,15 @@ export function PatientDetailPage() {
                       <tr key={a.id}>
                         <td>{new Date(a.starts_at).toLocaleDateString()}</td>
                         <td>
-                          {new Date(a.starts_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}–
-                          {new Date(a.ends_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                          {new Date(a.starts_at).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                          –
+                          {new Date(a.ends_at).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </td>
                         <td>{a.therapist_name}</td>
                         <td>

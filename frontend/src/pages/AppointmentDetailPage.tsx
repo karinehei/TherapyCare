@@ -15,7 +15,9 @@ export function AppointmentDetailPage() {
   const [noteBody, setNoteBody] = useState("");
   const [autosaveEnabled, setAutosaveEnabled] = useState(false);
   const [noteError, setNoteError] = useState<string | null>(null);
-  const [autosaveStatus, setAutosaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [autosaveStatus, setAutosaveStatus] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["appointment", id],
@@ -27,7 +29,9 @@ export function AppointmentDetailPage() {
   });
 
   const isTherapistForAppointment =
-    data && user?.therapist_profile_id != null && data.therapist === user.therapist_profile_id;
+    data &&
+    user?.therapist_profile_id != null &&
+    data.therapist === user.therapist_profile_id;
   const noteMasked = data?.session_note?.body === "Note hidden";
 
   useEffect(() => {
@@ -52,7 +56,9 @@ export function AppointmentDetailPage() {
         setTimeout(() => setAutosaveStatus("idle"), 2000);
       } catch (err) {
         setAutosaveStatus("error");
-        setNoteError(err instanceof ApiError ? String(err.detail) : "Failed to save");
+        setNoteError(
+          err instanceof ApiError ? String(err.detail) : "Failed to save"
+        );
       }
     },
     [id, data?.session_note, noteMasked, queryClient]
@@ -65,12 +71,24 @@ export function AppointmentDetailPage() {
       const prev = queryClient.getQueryData(["appointment", id]);
       queryClient.setQueryData(["appointment", id], (old: unknown) => {
         if (old && typeof old === "object" && "session_note" in old) {
-          const o = old as { session_note?: { id: number; body: string; created_at: string; updated_at: string } };
+          const o = old as {
+            session_note?: {
+              id: number;
+              body: string;
+              created_at: string;
+              updated_at: string;
+            };
+          };
           return {
             ...o,
             session_note: o.session_note
               ? { ...o.session_note, body }
-              : { id: 0, body, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+              : {
+                  id: 0,
+                  body,
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString(),
+                },
           };
         }
         return old;
@@ -79,7 +97,9 @@ export function AppointmentDetailPage() {
     },
     onSuccess: () => setNoteError(null),
     onError: (err: unknown, _body, ctx) => {
-      setNoteError(err instanceof ApiError ? String(err.detail) : "Failed to save");
+      setNoteError(
+        err instanceof ApiError ? String(err.detail) : "Failed to save"
+      );
       if (ctx?.prev) queryClient.setQueryData(["appointment", id], ctx.prev);
     },
   });
@@ -93,7 +113,14 @@ export function AppointmentDetailPage() {
       }
     }, AUTOSAVE_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [noteBody, autosaveEnabled, isTherapistForAppointment, noteMasked, data?.session_note?.body, saveNote]);
+  }, [
+    noteBody,
+    autosaveEnabled,
+    isTherapistForAppointment,
+    noteMasked,
+    data?.session_note?.body,
+    saveNote,
+  ]);
 
   if (!id) return null;
   if (isLoading) {
@@ -107,7 +134,11 @@ export function AppointmentDetailPage() {
     return (
       <div className="page">
         <div className="empty-state error">Appointment not found.</div>
-        <Link to="/app/appointments" className="btn btn-ghost" style={{ marginTop: "1rem" }}>
+        <Link
+          to="/app/appointments"
+          className="btn btn-ghost"
+          style={{ marginTop: "1rem" }}
+        >
           ← Back to appointments
         </Link>
       </div>
@@ -116,7 +147,11 @@ export function AppointmentDetailPage() {
 
   return (
     <div className="page">
-      <Link to="/app/appointments" className="btn btn-ghost" style={{ marginBottom: "1rem" }}>
+      <Link
+        to="/app/appointments"
+        className="btn btn-ghost"
+        style={{ marginBottom: "1rem" }}
+      >
         ← Back to appointments
       </Link>
 
@@ -126,7 +161,9 @@ export function AppointmentDetailPage() {
           <dl className="detail-grid">
             <dt>Patient</dt>
             <dd>
-              <Link to={`/app/patients/${data.patient}`}>{data.patient_name}</Link>
+              <Link to={`/app/patients/${data.patient}`}>
+                {data.patient_name}
+              </Link>
             </dd>
             <dt>Therapist</dt>
             <dd>{data.therapist_name}</dd>
@@ -155,7 +192,10 @@ export function AppointmentDetailPage() {
         <div className="card-header">Session note</div>
         <div className="card-body">
           {noteMasked ? (
-            <div className="note-masked" style={{ color: "var(--color-text-muted)", fontStyle: "italic" }}>
+            <div
+              className="note-masked"
+              style={{ color: "var(--color-text-muted)", fontStyle: "italic" }}
+            >
               Note hidden
             </div>
           ) : isTherapistForAppointment ? (
@@ -170,16 +210,34 @@ export function AppointmentDetailPage() {
                   placeholder="Enter session notes…"
                 />
               </div>
-              <div style={{ display: "flex", gap: "1rem", alignItems: "center", flexWrap: "wrap" }}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "1rem",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+              >
                 <button
                   type="button"
                   className="btn btn-primary"
                   onClick={() => noteMutation.mutate(noteBody)}
                   disabled={noteMutation.isPending}
                 >
-                  {noteMutation.isPending ? "Saving…" : data.session_note ? "Update note" : "Save note"}
+                  {noteMutation.isPending
+                    ? "Saving…"
+                    : data.session_note
+                      ? "Update note"
+                      : "Save note"}
                 </button>
-                <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    cursor: "pointer",
+                  }}
+                >
                   <input
                     type="checkbox"
                     checked={autosaveEnabled}
@@ -188,20 +246,43 @@ export function AppointmentDetailPage() {
                   <span style={{ fontSize: "0.875rem" }}>Autosave</span>
                 </label>
                 {autosaveStatus === "saved" && (
-                  <span style={{ fontSize: "0.8125rem", color: "var(--color-primary)" }}>Saved</span>
+                  <span
+                    style={{
+                      fontSize: "0.8125rem",
+                      color: "var(--color-primary)",
+                    }}
+                  >
+                    Saved
+                  </span>
                 )}
                 {autosaveStatus === "saving" && (
-                  <span style={{ fontSize: "0.8125rem", color: "var(--color-text-muted)" }}>Saving…</span>
+                  <span
+                    style={{
+                      fontSize: "0.8125rem",
+                      color: "var(--color-text-muted)",
+                    }}
+                  >
+                    Saving…
+                  </span>
                 )}
               </div>
-              {noteError && <div className="input-error-message" style={{ marginTop: "0.5rem" }}>{noteError}</div>}
+              {noteError && (
+                <div
+                  className="input-error-message"
+                  style={{ marginTop: "0.5rem" }}
+                >
+                  {noteError}
+                </div>
+              )}
             </>
+          ) : data.session_note ? (
+            <div className="note-body" style={{ whiteSpace: "pre-wrap" }}>
+              {data.session_note.body}
+            </div>
           ) : (
-            data.session_note ? (
-              <div className="note-body" style={{ whiteSpace: "pre-wrap" }}>{data.session_note.body}</div>
-            ) : (
-              <p style={{ color: "var(--color-text-muted)" }}>No session note yet.</p>
-            )
+            <p style={{ color: "var(--color-text-muted)" }}>
+              No session note yet.
+            </p>
           )}
         </div>
       </div>

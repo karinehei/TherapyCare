@@ -24,7 +24,9 @@ function getWeekRange(weekStart: Date): Date[] {
   });
 }
 
-function groupByDay(appointments: AppointmentList[]): Record<string, AppointmentList[]> {
+function groupByDay(
+  appointments: AppointmentList[]
+): Record<string, AppointmentList[]> {
   return appointments.reduce<Record<string, AppointmentList[]>>((acc, a) => {
     const key = new Date(a.starts_at).toISOString().slice(0, 10);
     (acc[key] = acc[key] ?? []).push(a);
@@ -81,12 +83,28 @@ export function AppointmentsPage() {
 
   return (
     <div className="page">
-      <div className="page-header" style={{ display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "center" }}>
+      <div
+        className="page-header"
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "1rem",
+          alignItems: "center",
+        }}
+      >
         <div>
           <h1 className="page-title">Appointments</h1>
           <p className="page-subtitle">{data?.count ?? 0} appointment(s)</p>
         </div>
-        <div className="calendar-nav" style={{ marginLeft: "auto", display: "flex", gap: "0.5rem", alignItems: "center" }}>
+        <div
+          className="calendar-nav"
+          style={{
+            marginLeft: "auto",
+            display: "flex",
+            gap: "0.5rem",
+            alignItems: "center",
+          }}
+        >
           <button type="button" className="btn btn-ghost" onClick={goPrevWeek}>
             ← Prev
           </button>
@@ -96,8 +114,15 @@ export function AppointmentsPage() {
           <button type="button" className="btn btn-ghost" onClick={goNextWeek}>
             Next →
           </button>
-          <span style={{ fontSize: "0.8125rem", color: "var(--color-text-muted)", marginLeft: "0.5rem" }}>
-            {weekDays[0].toLocaleDateString()} – {weekDays[6].toLocaleDateString()}
+          <span
+            style={{
+              fontSize: "0.8125rem",
+              color: "var(--color-text-muted)",
+              marginLeft: "0.5rem",
+            }}
+          >
+            {weekDays[0].toLocaleDateString()} –{" "}
+            {weekDays[6].toLocaleDateString()}
           </span>
         </div>
       </div>
@@ -107,12 +132,16 @@ export function AppointmentsPage() {
           {weekDays.map((day: Date) => {
             const key = toDateKey(day);
             const dayAppointments = (byDay[key] ?? []).sort(
-              (a: AppointmentList, b: AppointmentList) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime()
+              (a: AppointmentList, b: AppointmentList) =>
+                new Date(a.starts_at).getTime() -
+                new Date(b.starts_at).getTime()
             );
             return (
               <div key={key} className="calendar-day-column">
                 <div className="calendar-day-header">
-                  <div className="calendar-day-name">{WEEKDAYS[day.getDay()]}</div>
+                  <div className="calendar-day-name">
+                    {WEEKDAYS[day.getDay()]}
+                  </div>
                   <div className="calendar-day-date">{day.getDate()}</div>
                 </div>
                 <div className="calendar-day-slots">
@@ -136,8 +165,12 @@ export function AppointmentsPage() {
                             minute: "2-digit",
                           })}
                         </div>
-                        <div className="calendar-slot-patient">{a.patient_name}</div>
-                        <div className="calendar-slot-therapist">{a.therapist_name}</div>
+                        <div className="calendar-slot-patient">
+                          {a.patient_name}
+                        </div>
+                        <div className="calendar-slot-therapist">
+                          {a.therapist_name}
+                        </div>
                         <span
                           className="calendar-slot-status"
                           style={{

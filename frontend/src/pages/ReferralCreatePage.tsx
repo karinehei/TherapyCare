@@ -24,9 +24,11 @@ export function ReferralCreatePage() {
 
   const { data: clinicsRes } = useQuery({
     queryKey: ["clinics"],
-    queryFn: () => api.get<{ results?: { id: number; name: string }[] }>("/clinics/"),
+    queryFn: () =>
+      api.get<{ results?: { id: number; name: string }[] }>("/clinics/"),
   });
-  const clinics = clinicsRes && "results" in clinicsRes ? clinicsRes.results ?? [] : [];
+  const clinics =
+    clinicsRes && "results" in clinicsRes ? (clinicsRes.results ?? []) : [];
 
   const {
     register,
@@ -39,7 +41,8 @@ export function ReferralCreatePage() {
   });
 
   const qType = watch("questionnaire_type");
-  const questions = qType === "phq9" ? PHQ9_QUESTIONS : qType === "gad7" ? GAD7_QUESTIONS : [];
+  const questions =
+    qType === "phq9" ? PHQ9_QUESTIONS : qType === "gad7" ? GAD7_QUESTIONS : [];
   const [qAnswers, setQAnswers] = useState<Record<number, number>>({});
 
   useEffect(() => {
@@ -76,7 +79,11 @@ export function ReferralCreatePage() {
       navigate(`/app/referrals/${data.id}`);
     },
     onError: (err: unknown) => {
-      setServerError(err instanceof ApiError ? String(err.detail) : "Failed to create referral");
+      setServerError(
+        err instanceof ApiError
+          ? String(err.detail)
+          : "Failed to create referral"
+      );
     },
   });
 
@@ -90,7 +97,10 @@ export function ReferralCreatePage() {
       <div className="card">
         <div className="card-body">
           {serverError && (
-            <div className="empty-state error" style={{ marginBottom: "1rem", textAlign: "left" }}>
+            <div
+              className="empty-state error"
+              style={{ marginBottom: "1rem", textAlign: "left" }}
+            >
               {serverError}
             </div>
           )}
@@ -104,7 +114,9 @@ export function ReferralCreatePage() {
                   {...register("patient_name")}
                 />
                 {errors.patient_name && (
-                  <div className="input-error-message">{errors.patient_name.message}</div>
+                  <div className="input-error-message">
+                    {errors.patient_name.message}
+                  </div>
                 )}
               </div>
               <div className="input-group">
@@ -116,7 +128,9 @@ export function ReferralCreatePage() {
                   {...register("patient_email")}
                 />
                 {errors.patient_email && (
-                  <div className="input-error-message">{errors.patient_email.message}</div>
+                  <div className="input-error-message">
+                    {errors.patient_email.message}
+                  </div>
                 )}
               </div>
             </div>
@@ -142,8 +156,14 @@ export function ReferralCreatePage() {
               />
             </div>
             <div className="input-group">
-              <label htmlFor="questionnaire_type">Screening questionnaire</label>
-              <select id="questionnaire_type" className="input" {...register("questionnaire_type")}>
+              <label htmlFor="questionnaire_type">
+                Screening questionnaire
+              </label>
+              <select
+                id="questionnaire_type"
+                className="input"
+                {...register("questionnaire_type")}
+              >
                 <option value="none">None</option>
                 <option value="phq9">PHQ-9 (Depression)</option>
                 <option value="gad7">GAD-7 (Anxiety)</option>
@@ -152,7 +172,8 @@ export function ReferralCreatePage() {
             {questions.length > 0 && (
               <div className="questionnaire-section">
                 <strong>
-                  {qType === "phq9" ? "PHQ-9" : "GAD-7"} questions (0 = Not at all, 3 = Nearly every day)
+                  {qType === "phq9" ? "PHQ-9" : "GAD-7"} questions (0 = Not at
+                  all, 3 = Nearly every day)
                 </strong>
                 {questions.map((q, i) => (
                   <div key={i} className="input-group">
@@ -161,7 +182,10 @@ export function ReferralCreatePage() {
                       className="input"
                       value={qAnswers[i] ?? 0}
                       onChange={(e) =>
-                        setQAnswers((prev) => ({ ...prev, [i]: parseInt(e.target.value, 10) || 0 }))
+                        setQAnswers((prev) => ({
+                          ...prev,
+                          [i]: parseInt(e.target.value, 10) || 0,
+                        }))
                       }
                     >
                       {[0, 1, 2, 3].map((v) => (
@@ -175,10 +199,18 @@ export function ReferralCreatePage() {
               </div>
             )}
             <div className="form-actions">
-              <button type="button" className="btn btn-ghost" onClick={() => navigate(-1)}>
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={() => navigate(-1)}
+              >
                 Cancel
               </button>
-              <button type="submit" className="btn btn-primary" disabled={createMutation.isPending}>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={createMutation.isPending}
+              >
                 {createMutation.isPending ? "Submitting…" : "Submit referral"}
               </button>
             </div>

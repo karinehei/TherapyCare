@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/api/schemas";
@@ -14,7 +19,10 @@ export function LoginPage() {
   const [searchParams] = useSearchParams();
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const next = searchParams.get("next") ?? (location.state as { from?: { pathname: string } })?.from?.pathname ?? "/app";
+  const next =
+    searchParams.get("next") ??
+    (location.state as { from?: { pathname: string } })?.from?.pathname ??
+    "/app";
 
   const {
     register,
@@ -32,7 +40,9 @@ export function LoginPage() {
       navigate(next, { replace: true });
     } catch (err) {
       if (err instanceof ApiError) {
-        setServerError(typeof err.detail === "string" ? err.detail : "Login failed");
+        setServerError(
+          typeof err.detail === "string" ? err.detail : "Login failed"
+        );
       } else {
         setServerError("Login failed. Please try again.");
       }
@@ -47,7 +57,11 @@ export function LoginPage() {
           {serverError && (
             <div
               className="empty-state error"
-              style={{ padding: "0.75rem", marginBottom: "1rem", textAlign: "left" }}
+              style={{
+                padding: "0.75rem",
+                marginBottom: "1rem",
+                textAlign: "left",
+              }}
             >
               {serverError}
             </div>
@@ -63,7 +77,9 @@ export function LoginPage() {
                 autoComplete="email"
               />
               {errors.email && (
-                <div className="input-error-message">{errors.email.message}</div>
+                <div className="input-error-message">
+                  {errors.email.message}
+                </div>
               )}
             </div>
             <div className="input-group">
@@ -76,14 +92,26 @@ export function LoginPage() {
                 autoComplete="current-password"
               />
               {errors.password && (
-                <div className="input-error-message">{errors.password.message}</div>
+                <div className="input-error-message">
+                  {errors.password.message}
+                </div>
               )}
             </div>
-            <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={isSubmitting}
+            >
               {isSubmitting ? "Logging in…" : "Login"}
             </button>
           </form>
-          <p style={{ marginTop: "1rem", fontSize: "0.875rem", color: "var(--color-text-muted)" }}>
+          <p
+            style={{
+              marginTop: "1rem",
+              fontSize: "0.875rem",
+              color: "var(--color-text-muted)",
+            }}
+          >
             <Link to="/">← Back to search</Link>
           </p>
         </div>

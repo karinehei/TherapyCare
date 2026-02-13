@@ -20,7 +20,13 @@ vi.mock("@/api/client", () => ({
       price_max: 150,
       created_at: "2024-01-01T00:00:00Z",
       availability_slots: [
-        { id: 1, weekday: 0, start_time: "09:00:00", end_time: "17:00:00", timezone: "America/Los_Angeles" },
+        {
+          id: 1,
+          weekday: 0,
+          start_time: "09:00:00",
+          end_time: "17:00:00",
+          timezone: "America/Los_Angeles",
+        },
       ],
       location: null,
       clinic: null,
@@ -79,7 +85,9 @@ describe("TherapistDetailPage", () => {
       </Wrapper>
     );
 
-    expect(await screen.findByRole("link", { name: /login to request appointment/i })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("link", { name: /login to request appointment/i })
+    ).toBeInTheDocument();
   });
 
   it("shows availability section", async () => {

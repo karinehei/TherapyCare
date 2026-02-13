@@ -12,7 +12,10 @@ export interface SearchFilters {
   page: number;
 }
 
-export function useSearchParamsState(): [SearchFilters, (updates: Partial<SearchFilters>) => void] {
+export function useSearchParamsState(): [
+  SearchFilters,
+  (updates: Partial<SearchFilters>) => void,
+] {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const filters = useMemo<SearchFilters>(() => {
@@ -38,9 +41,7 @@ export function useSearchParamsState(): [SearchFilters, (updates: Partial<Search
         for (const k of Object.keys(merged) as (keyof SearchFilters)[]) {
           const val = merged[k];
           const isEmpty =
-            val === "" ||
-            val === false ||
-            (k === "page" && val === 1);
+            val === "" || val === false || (k === "page" && val === 1);
           if (isEmpty) {
             next.delete(k);
           } else {

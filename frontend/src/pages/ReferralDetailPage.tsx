@@ -31,14 +31,19 @@ export function ReferralDetailPage() {
 
   const { data: therapistsRes } = useQuery({
     queryKey: ["therapists"],
-    queryFn: () => api.get<{ results?: { id: number; display_name: string }[] }>("/therapists/"),
+    queryFn: () =>
+      api.get<{ results?: { id: number; display_name: string }[] }>(
+        "/therapists/"
+      ),
     enabled: isAdmin && !!id,
   });
   const therapistList = therapistsRes?.results ?? [];
 
   const patchMutation = useMutation({
-    mutationFn: (payload: { status?: string; assigned_therapist?: number | null }) =>
-      api.patch(`/referrals/${id}/`, payload),
+    mutationFn: (payload: {
+      status?: string;
+      assigned_therapist?: number | null;
+    }) => api.patch(`/referrals/${id}/`, payload),
     onMutate: async (payload) => {
       await queryClient.cancelQueries({ queryKey: ["referral", id] });
       const prev = queryClient.getQueryData(["referral", id]);
@@ -54,14 +59,17 @@ export function ReferralDetailPage() {
       setStatusError(null);
     },
     onError: (err: unknown, _vars, ctx) => {
-      setStatusError(err instanceof ApiError ? String(err.detail) : "Update failed");
+      setStatusError(
+        err instanceof ApiError ? String(err.detail) : "Update failed"
+      );
       if (ctx?.prev) queryClient.setQueryData(["referral", id], ctx.prev);
     },
   });
 
   const noteMutation = useMutation({
     mutationFn: (body: string) => api.post(`/referrals/${id}/notes/`, { body }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["referral", id] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["referral", id] }),
   });
 
   const {
@@ -74,7 +82,12 @@ export function ReferralDetailPage() {
   });
 
   if (!id) return null;
-  if (isLoading) return <div className="page"><div className="page-loading">Loading…</div></div>;
+  if (isLoading)
+    return (
+      <div className="page">
+        <div className="page-loading">Loading…</div>
+      </div>
+    );
   if (error || !data) {
     return (
       <div className="page">
@@ -84,11 +97,17 @@ export function ReferralDetailPage() {
     );
   }
 
-  const statusLabel = REFERRAL_STATUSES.find((s) => s.value === data.status)?.label ?? data.status;
+  const statusLabel =
+    REFERRAL_STATUSES.find((s) => s.value === data.status)?.label ??
+    data.status;
 
   return (
     <div className="page">
-      <Link to="/app/referrals" className="btn btn-ghost" style={{ marginBottom: "1rem" }}>
+      <Link
+        to="/app/referrals"
+        className="btn btn-ghost"
+        style={{ marginBottom: "1rem" }}
+      >
         ← Back to referrals
       </Link>
 
@@ -120,7 +139,9 @@ export function ReferralDetailPage() {
             <div className="detail-actions">
               <div className="input-group">
                 <label>Status</label>
-                <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                <div
+                  style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}
+                >
                   {data.allowed_transitions.map((st) => (
                     <button
                       key={st}
@@ -129,14 +150,20 @@ export function ReferralDetailPage() {
                       onClick={() => patchMutation.mutate({ status: st })}
                       disabled={patchMutation.isPending}
                     >
-                      → {REFERRAL_STATUSES.find((s) => s.value === st)?.label ?? st}
+                      →{" "}
+                      {REFERRAL_STATUSES.find((s) => s.value === st)?.label ??
+                        st}
                     </button>
                   ))}
                   {data.allowed_transitions.length === 0 && (
-                    <span style={{ color: "var(--color-text-muted)" }}>No transitions</span>
+                    <span style={{ color: "var(--color-text-muted)" }}>
+                      No transitions
+                    </span>
                   )}
                 </div>
-                {statusError && <div className="input-error-message">{statusError}</div>}
+                {statusError && (
+                  <div className="input-error-message">{statusError}</div>
+                )}
               </div>
               <div className="input-group">
                 <label>Assign therapist</label>
@@ -145,7 +172,9 @@ export function ReferralDetailPage() {
                   value={data.assigned_therapist ?? ""}
                   onChange={(e) =>
                     patchMutation.mutate({
-                      assigned_therapist: e.target.value ? parseInt(e.target.value, 10) : null,
+                      assigned_therapist: e.target.value
+                        ? parseInt(e.target.value, 10)
+                        : null,
                     })
                   }
                   disabled={patchMutation.isPending}
@@ -222,9 +251,15 @@ export function ReferralDetailPage() {
                 {...register("body")}
                 placeholder="Add a note…"
               />
-              {errors.body && <div className="input-error-message">{errors.body.message}</div>}
+              {errors.body && (
+                <div className="input-error-message">{errors.body.message}</div>
+              )}
             </div>
-            <button type="submit" className="btn btn-primary" disabled={noteMutation.isPending}>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={noteMutation.isPending}
+            >
               Add note
             </button>
           </form>

@@ -20,7 +20,9 @@ export function ReferralsPage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["referrals", statusFilter],
     queryFn: async () => {
-      const params = statusFilter ? `?status=${encodeURIComponent(statusFilter)}` : "";
+      const params = statusFilter
+        ? `?status=${encodeURIComponent(statusFilter)}`
+        : "";
       const res = await api.get<unknown>(`/referrals/${params}`);
       return schema.parse(res);
     },
@@ -28,10 +30,13 @@ export function ReferralsPage() {
 
   const results = data?.results ?? [];
 
-  const byStatus = results.reduce<Record<string, ReferralList[]>>((acc: Record<string, ReferralList[]>, r: ReferralList) => {
-    (acc[r.status] = acc[r.status] ?? []).push(r);
-    return acc;
-  }, {});
+  const byStatus = results.reduce<Record<string, ReferralList[]>>(
+    (acc: Record<string, ReferralList[]>, r: ReferralList) => {
+      (acc[r.status] = acc[r.status] ?? []).push(r);
+      return acc;
+    },
+    {}
+  );
 
   if (isLoading) {
     return (
@@ -76,7 +81,11 @@ export function ReferralsPage() {
             ))}
           </select>
           {isAdmin && (
-            <div className="referrals-view-toggle" role="group" aria-label="Referral view mode">
+            <div
+              className="referrals-view-toggle"
+              role="group"
+              aria-label="Referral view mode"
+            >
               <button
                 type="button"
                 className={`btn ${viewMode === "list" ? "btn-primary" : "btn-ghost"}`}
@@ -114,22 +123,39 @@ export function ReferralsPage() {
               <div key={s.value} className="kanban-column">
                 <div className="kanban-column-header" title={s.label}>
                   <span className="kanban-column-title">{s.label}</span>
-                  <span className="kanban-count-pill">{(byStatus[s.value] ?? []).length}</span>
+                  <span className="kanban-count-pill">
+                    {(byStatus[s.value] ?? []).length}
+                  </span>
                 </div>
                 <div className="kanban-column-body">
                   {(byStatus[s.value] ?? []).length === 0 ? (
                     <div className="kanban-empty">No referrals</div>
                   ) : (
                     (byStatus[s.value] ?? []).map((r) => (
-                      <Link key={r.id} to={`/app/referrals/${r.id}`} className="kanban-card">
-                        <div className="kanban-card-title">{r.patient_name}</div>
-                        <div className="kanban-card-subtitle">{r.patient_email}</div>
+                      <Link
+                        key={r.id}
+                        to={`/app/referrals/${r.id}`}
+                        className="kanban-card"
+                      >
+                        <div className="kanban-card-title">
+                          {r.patient_name}
+                        </div>
+                        <div className="kanban-card-subtitle">
+                          {r.patient_email}
+                        </div>
                         <div className="kanban-card-meta">
-                          <span>Created {new Date(r.created_at).toLocaleDateString()}</span>
+                          <span>
+                            Created{" "}
+                            {new Date(r.created_at).toLocaleDateString()}
+                          </span>
                           <span className="kanban-dot" aria-hidden="true">
                             ·
                           </span>
-                          <span>{r.assigned_therapist ? `Assigned #${r.assigned_therapist}` : "Unassigned"}</span>
+                          <span>
+                            {r.assigned_therapist
+                              ? `Assigned #${r.assigned_therapist}`
+                              : "Unassigned"}
+                          </span>
                         </div>
                       </Link>
                     ))
@@ -168,7 +194,9 @@ export function ReferralsPage() {
                         {r.status}
                       </span>
                     </td>
-                    <td>{r.assigned_therapist ? `#${r.assigned_therapist}` : "—"}</td>
+                    <td>
+                      {r.assigned_therapist ? `#${r.assigned_therapist}` : "—"}
+                    </td>
                     <td>{new Date(r.created_at).toLocaleDateString()}</td>
                     <td>
                       <Link to={`/app/referrals/${r.id}`}>View</Link>

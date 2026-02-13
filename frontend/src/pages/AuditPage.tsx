@@ -35,9 +35,7 @@ export function AuditPage() {
     <div className="page">
       <div className="page-header">
         <h1 className="page-title">Audit Log</h1>
-        <p className="page-subtitle">
-          {data?.count ?? 0} event(s)
-        </p>
+        <p className="page-subtitle">{data?.count ?? 0} event(s)</p>
       </div>
 
       <div className="card">

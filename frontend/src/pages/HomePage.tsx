@@ -71,7 +71,9 @@ export function HomePage() {
               id="specialty"
               className="input"
               value={filters.specialty}
-              onChange={(e) => setFilters({ specialty: e.target.value, page: 1 })}
+              onChange={(e) =>
+                setFilters({ specialty: e.target.value, page: 1 })
+              }
             >
               <option value="">All</option>
               {SPECIALTIES.map((s) => (
@@ -87,7 +89,9 @@ export function HomePage() {
               id="language"
               className="input"
               value={filters.language}
-              onChange={(e) => setFilters({ language: e.target.value, page: 1 })}
+              onChange={(e) =>
+                setFilters({ language: e.target.value, page: 1 })
+              }
             >
               <option value="">All</option>
               {LANGUAGES.map((l) => (
@@ -114,7 +118,9 @@ export function HomePage() {
               id="remote"
               type="checkbox"
               checked={filters.remote}
-              onChange={(e) => setFilters({ remote: e.target.checked, page: 1 })}
+              onChange={(e) =>
+                setFilters({ remote: e.target.checked, page: 1 })
+              }
             />
           </div>
         </div>
@@ -238,8 +244,7 @@ export function HomePage() {
                     Previous
                   </button>
                   <span className="pagination-info">
-                    Page {filters.page} of{" "}
-                    {Math.ceil(data.count / pageSize)}
+                    Page {filters.page} of {Math.ceil(data.count / pageSize)}
                   </span>
                   <button
                     type="button"

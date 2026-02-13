@@ -32,7 +32,9 @@ export function AppShell() {
             <NavLink
               key={item.to}
               to={item.to}
-              className={({ isActive }) => `app-nav-link ${isActive ? "active" : ""}`}
+              className={({ isActive }) =>
+                `app-nav-link ${isActive ? "active" : ""}`
+              }
             >
               {item.label}
             </NavLink>
@@ -41,7 +43,11 @@ export function AppShell() {
         <div className="app-user">
           <span className="app-user-email">{user?.email}</span>
           <span className="app-user-role">({user?.role})</span>
-          <button type="button" className="btn btn-ghost" onClick={handleLogout}>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={handleLogout}
+          >
             Logout
           </button>
         </div>
