@@ -2,7 +2,7 @@
 
 Modular monolith for therapy clinic management: referrals, appointments, patient profiles, and therapist directory.
 
-[![CI](https://github.com/OWNER/TherapyCare/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/TherapyCare/actions/workflows/ci.yml)
+[![CI](https://github.com/karinehei/TherapyCare/actions/workflows/ci.yml/badge.svg)](https://github.com/karinehei/TherapyCare/actions/workflows/ci.yml)
 
 > Replace `OWNER` with your GitHub org/username in the badge URL.
 
@@ -11,6 +11,12 @@ Modular monolith for therapy clinic management: referrals, appointments, patient
 ![TherapyCare Find a Therapist](docs/dashboard.gif)
 
 Search and filter licensed therapists by name, specialty, language, city, and price. Log in to access referrals and book appointments.
+
+## Admin
+
+![TherapyCare Django Admin](docs/admin.gif)
+
+Staff and clinic admins manage referrals, appointments, patients, and therapist profiles via the Django Daisy admin at `/admin/`.
 
 ---
 
