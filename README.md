@@ -47,6 +47,11 @@ make dev-frontend   # Terminal 2
 make dev
 ```
 
+Notes:
+
+- If **Poetry** (backend) or **npm** (frontend) are not available in your shell, the `Makefile` targets will fall back to running the relevant service via Docker Compose.
+- On Windows, running `make` is easiest via **WSL** or **Git Bash**.
+
 | Make target | Description |
 |-------------|-------------|
 | `make dev` | Docker: backend + frontend + nginx |
@@ -155,6 +160,7 @@ Services:
 ### Seed in Docker
 
 ```bash
+docker compose -f infra/docker-compose.yml exec backend python manage.py migrate
 docker compose -f infra/docker-compose.yml exec backend python manage.py seed_demo
 ```
 
@@ -181,8 +187,13 @@ See **[docs/SECURITY.md](docs/SECURITY.md)** for threat model, secure headers, r
 
 On push/PR to `main` or `develop`:
 
-- **Backend**: Poetry install, ruff, black, mypy (if `mypy.ini` exists), pytest with Postgres
+- **Backend**: Poetry install (deps-only), ruff, black, mypy (if `mypy.ini` exists), pytest with Postgres
 - **Frontend**: npm install, eslint, prettier, typecheck, vitest, build
+
+Notes:
+
+- Backend formatting excludes `backend/.venv/` (CI creates an in-project virtualenv).
+- `npm run test:run` is **Vitest** (unit/integration). Playwright lives under `frontend/e2e/` and is run via `npm run test:e2e`.
 
 Dependencies are cached. Use `npm install` in frontend once to generate `package-lock.json` for faster CI.
 
@@ -202,3 +213,13 @@ Dependencies are cached. Use `npm install` in frontend once to generate `package
 | `make check` | Pre-commit on all files |
 
 See `Makefile` for full list. Backend: `poetry run pytest`, `poetry run ruff check .`, `poetry run black .`. Frontend: `npm run lint`, `npm run format`, `npm run typecheck`.
+
+---
+
+## Dependency updates
+
+Dependabot is configured in `.github/dependabot.yml` for:
+
+- GitHub Actions
+- Frontend (npm)
+- Backend (Python/Poetry via `pyproject.toml`)
