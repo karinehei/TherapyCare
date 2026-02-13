@@ -1,7 +1,7 @@
 # TherapyCare - development tasks
 # Run from project root: make <target>
 
-.PHONY: dev dev-backend dev-frontend test test-backend test-frontend lint lint-fix seed seed-demo migrate install install-hooks check
+.PHONY: dev dev-backend dev-frontend test test-backend test-frontend lint lint-fix seed seed-demo migrate makemigrations install install-hooks check
 
 # Docker compose wrapper (used when local tools are missing)
 COMPOSE ?= docker compose -f infra/docker-compose.yml
@@ -78,31 +78,31 @@ lint-fix-frontend:
 
 # --- Database ---
 
-migrate:
-	@if command -v poetry >/dev/null 2>&1; then \
-		cd backend && poetry run python manage.py migrate; \
+# Run backend command: prefer poetry, then pip/venv, else Docker
+run-backend = @if command -v poetry >/dev/null 2>&1; then \
+		cd backend && poetry run python manage.py $(1); \
+	elif [ -f backend/.venv/bin/python ]; then \
+		cd backend && .venv/bin/python manage.py $(1); \
+	elif [ -f backend/.venv/Scripts/python.exe ]; then \
+		cd backend && .venv/Scripts/python.exe manage.py $(1); \
 	else \
-		echo "poetry not found; using Docker backend migrate instead."; \
-		$(COMPOSE) exec backend python manage.py migrate; \
+		echo "Poetry/venv not found; using Docker backend instead."; \
+		VITE_MODE=dev $(COMPOSE) run --rm backend python manage.py $(1); \
 	fi
+
+makemigrations:
+	$(call run-backend,makemigrations)
+
+migrate:
+	$(call run-backend,migrate)
 
 seed: seed-demo
 
 seed-demo:
-	@if command -v poetry >/dev/null 2>&1; then \
-		cd backend && poetry run python manage.py seed_demo; \
-	else \
-		echo "poetry not found; using Docker backend seed_demo instead."; \
-		$(COMPOSE) exec backend python manage.py seed_demo; \
-	fi
+	$(call run-backend,seed_demo)
 
 seed-minimal:
-	@if command -v poetry >/dev/null 2>&1; then \
-		cd backend && poetry run python manage.py seed; \
-	else \
-		echo "poetry not found; using Docker backend seed instead."; \
-		$(COMPOSE) exec backend python manage.py seed; \
-	fi
+	$(call run-backend,seed)
 
 # --- Setup ---
 
