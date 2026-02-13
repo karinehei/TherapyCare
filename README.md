@@ -266,4 +266,4 @@ Dependabot is configured in `.github/dependabot.yml` for:
 
 ## License
 
-MIT License — Copyright (c) 2025 [Karine Heinonen](https://github.com/karinehei). See [LICENSE](LICENSE) for details.
+MIT License — Copyright (c) 2026 [Karine Heinonen](https://github.com/karinehei). See [LICENSE](LICENSE) for details.
