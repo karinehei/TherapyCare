@@ -1,0 +1,44 @@
+# TherapyCare pre-commit hooks
+# Install: make install-hooks  or  pre-commit install
+# Run: make check  or  pre-commit run --all-files
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: detect-private-key
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.0
+    hooks:
+      - id: ruff
+        args: [--fix]
+        files: ^backend/.*\.py$
+
+  - repo: https://github.com/psf/black
+    rev: 24.4.0
+    hooks:
+      - id: black
+        language_version: python3
+        files: ^backend/.*\.py$
+
+  - repo: local
+    hooks:
+      - id: frontend-lint
+        name: frontend eslint
+        entry: npm run lint --prefix frontend
+        language: system
+        files: ^frontend/.*\.(ts|tsx)$
+      - id: frontend-format
+        name: frontend prettier
+        entry: npm run format --prefix frontend
+        language: system
+        files: ^frontend/.*\.(ts|tsx|css|json)$
