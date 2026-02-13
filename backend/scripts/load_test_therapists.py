@@ -5,6 +5,7 @@ Usage:
   python scripts/load_test_therapists.py [--base-url URL] [--users N] [--requests N]
   pip install locust && locust -f scripts/locust_therapists.py --host=http://localhost:8000
 """
+
 import argparse
 import statistics
 import time
@@ -42,7 +43,9 @@ def load_test(base_url: str, num_users: int, requests_per_user: int) -> dict:
         "mean_ms": statistics.mean(results) * 1000,
         "median_ms": statistics.median(results) * 1000,
         "p95_ms": (
-            sorted(results)[int(len(results) * 0.95)] * 1000 if len(results) >= 20 else max(results) * 1000
+            sorted(results)[int(len(results) * 0.95)] * 1000
+            if len(results) >= 20
+            else max(results) * 1000
         ),
     }
 
