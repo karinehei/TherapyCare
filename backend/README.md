@@ -47,11 +47,12 @@ Creates clinic admin `admin@therapycare.demo` / `demo123` and other demo users.
 
 ## Admin theme
 
-The admin uses [django-admin-interface](https://github.com/fabiocaccamo/django-admin-interface) for a modern, customizable UI. After first setup:
+The admin uses [Django Daisy](https://github.com/hypy13/django-daisy), a responsive admin built with DaisyUI and TailwindCSS. Application icons use Font Awesome.
+
+After first setup, collect static files:
 
 ```bash
 python manage.py collectstatic --noinput
-python manage.py loaddata admin_interface_theme_therapycare
 ```
 
-This applies the TherapyCare theme (calm teal palette). You can further customize colors, logo, and title via **Admin** → **Themes** in the admin panel.
+The TherapyCare theme (corporate) and app icons are configured in `config/settings/base.py` via `DAISY_SETTINGS`. You can switch themes via the theme selector in the admin.

@@ -3,7 +3,6 @@ Base Django settings for TherapyCare.
 All config via env vars (12-factor). Use dev.py or prod.py for environment overrides.
 """
 
-import importlib.util
 from datetime import timedelta
 from pathlib import Path
 
@@ -23,14 +22,10 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env.bool("DEBUG", default=True)
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1", "backend"])
 
-
-def _admin_interface_available():
-    return importlib.util.find_spec("admin_interface") is not None
-
-
 INSTALLED_APPS = [
-    *(["admin_interface", "colorfield"] if _admin_interface_available() else []),
+    "django_daisy",
     "django.contrib.admin",
+    "django.contrib.humanize",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -62,9 +57,54 @@ MIDDLEWARE = [
     "config.middleware.SecurityHeadersMiddleware",
 ]
 
-# django-admin-interface: modals instead of popups
+# django-daisy: modals instead of popups
 X_FRAME_OPTIONS = "SAMEORIGIN"
-SILENCED_SYSTEM_CHECKS = ["security.W019"]
+
+# Django Daisy: responsive admin with DaisyUI + TailwindCSS
+DAISY_SETTINGS = {
+    "SITE_TITLE": "TherapyCare",
+    "SITE_HEADER": "TherapyCare Admin",
+    "INDEX_TITLE": "Welcome to TherapyCare Administration",
+    "DEFAULT_THEME": "corporate",
+    "SHOW_THEME_SELECTOR": True,
+    "APPS_REORDER": {
+        "auth": {
+            "icon": "fa-solid fa-key",
+            "name": "Authentication",
+            "divider_title": "System",
+        },
+        "accounts": {
+            "icon": "fa-solid fa-users",
+            "name": "Accounts",
+            "divider_title": "TherapyCare",
+        },
+        "clinics": {
+            "icon": "fa-solid fa-building",
+            "name": "Clinics",
+        },
+        "directory": {
+            "icon": "fa-solid fa-address-book",
+            "name": "Directory",
+        },
+        "referrals": {
+            "icon": "fa-solid fa-paper-plane",
+            "name": "Referrals",
+        },
+        "patients": {
+            "icon": "fa-solid fa-user-doctor",
+            "name": "Patients",
+        },
+        "appointments": {
+            "icon": "fa-solid fa-calendar-check",
+            "name": "Appointments",
+        },
+        "audit": {
+            "icon": "fa-solid fa-clipboard-list",
+            "name": "Audit",
+            "divider_title": "System",
+        },
+    },
+}
 
 ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
