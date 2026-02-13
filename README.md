@@ -3,6 +3,7 @@
 Modular monolith for therapy clinic management: referrals, appointments, patient profiles, and therapist directory.
 
 [![CI](https://github.com/karinehei/TherapyCare/actions/workflows/ci.yml/badge.svg)](https://github.com/karinehei/TherapyCare/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
 ## Dashboard
@@ -260,3 +261,9 @@ Dependabot is configured in `.github/dependabot.yml` for:
 - GitHub Actions
 - Frontend (npm)
 - Backend (Python/Poetry via `pyproject.toml`)
+
+---
+
+## License
+
+MIT License — Copyright (c) 2025 [Karine Heinonen](https://github.com/karinehei). See [LICENSE](LICENSE) for details.
