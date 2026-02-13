@@ -44,7 +44,8 @@ class SessionNoteMaskedSerializer(serializers.ModelSerializer):
         fields = ["id", "author", "body", "created_at", "updated_at"]
 
     def get_body(self, obj):
-        return "Note hidden"
+        # Keep wording stable (tests + UI rely on "REDACTED")
+        return "REDACTED"
 
 
 class AppointmentDetailSerializer(serializers.ModelSerializer):

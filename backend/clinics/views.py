@@ -1,7 +1,7 @@
 """Clinic views. CRUD limited to clinic admins."""
 
 from rest_framework import viewsets
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.throttling import AnonRateThrottle
 
 from accounts.permissions import IsClinicAdmin
@@ -20,7 +20,7 @@ class ClinicViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ("list", "retrieve"):
-            return [AllowAny()]
+            return [IsAuthenticated()]
         return [IsClinicAdmin()]
 
 
