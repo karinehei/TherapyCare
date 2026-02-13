@@ -6,6 +6,14 @@ Modular monolith for therapy clinic management: referrals, appointments, patient
 
 > Replace `OWNER` with your GitHub org/username in the badge URL.
 
+## Dashboard
+
+![TherapyCare Find a Therapist](docs/dashboard.gif)
+
+Search and filter licensed therapists by name, specialty, language, city, and price. Log in to access referrals and book appointments.
+
+---
+
 ## Structure
 
 ```
