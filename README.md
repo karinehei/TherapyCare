@@ -32,7 +32,8 @@ therapycare/
 ├── backend/          # Django + DRF (Python 3.12, Poetry)
 ├── frontend/         # React + TypeScript (Vite)
 ├── infra/            # Docker Compose + nginx
-└── .github/workflows # CI
+├── docs/             # Screenshots, SECURITY.md
+└── .github/          # CI workflows, Dependabot
 ```
 
 ## Prerequisites
