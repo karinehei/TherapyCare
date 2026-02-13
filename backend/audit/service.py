@@ -2,6 +2,7 @@
 Audit service: append-only event logging.
 Sensitive fields (e.g. SessionNote body) are NEVER stored in metadata.
 """
+
 from django.contrib.auth import get_user_model
 
 from .models import AuditEvent
@@ -15,11 +16,26 @@ ENTITY_REFERRAL = "referral"
 ENTITY_SESSION_NOTE = "session_note"
 
 # Metadata keys that must NEVER be stored (sensitive content)
-FORBIDDEN_METADATA_KEYS = frozenset({
-    "body", "content", "session_note_body", "note_body",
-    "password", "token", "secret", "api_key", "access_token", "refresh_token",
-    "email", "phone", "ssn", "diagnosis", "medical", "health",
-})
+FORBIDDEN_METADATA_KEYS = frozenset(
+    {
+        "body",
+        "content",
+        "session_note_body",
+        "note_body",
+        "password",
+        "token",
+        "secret",
+        "api_key",
+        "access_token",
+        "refresh_token",
+        "email",
+        "phone",
+        "ssn",
+        "diagnosis",
+        "medical",
+        "health",
+    }
+)
 
 
 def get_client_ip(request):
@@ -73,7 +89,12 @@ def log_event(
     metadata = sanitize_metadata(metadata)
 
     actor_id = actor.id if actor else None
-    if actor is None and request and getattr(request, "user", None) and request.user.is_authenticated:
+    if (
+        actor is None
+        and request
+        and getattr(request, "user", None)
+        and request.user.is_authenticated
+    ):
         actor_id = request.user.id
 
     AuditEvent.objects.create(

@@ -1,4 +1,5 @@
 """Custom pagination. Default page_size=20, max_page_size=100."""
+
 from rest_framework.pagination import PageNumberPagination
 
 

@@ -1,4 +1,5 @@
 """Append-only audit log models."""
+
 import uuid
 
 from django.contrib.auth import get_user_model

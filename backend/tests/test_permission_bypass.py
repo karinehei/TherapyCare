@@ -1,4 +1,5 @@
 """Tests for permission bypass attempts. Ensures role-based access cannot be circumvented."""
+
 import pytest
 from django.contrib.auth import get_user_model
 from rest_framework import status
@@ -35,12 +36,14 @@ def support_user():
 @pytest.fixture
 def clinic():
     from clinics.models import Clinic
+
     return Clinic.objects.create(name="C", slug="c")
 
 
 @pytest.fixture
 def therapist_profile(therapist_user, clinic):
     from directory.models import TherapistProfile
+
     return TherapistProfile.objects.create(
         user=therapist_user,
         display_name="Dr. T1",
@@ -52,6 +55,7 @@ def therapist_profile(therapist_user, clinic):
 @pytest.fixture
 def therapist_profile_2(therapist_user_2, clinic):
     from directory.models import TherapistProfile
+
     return TherapistProfile.objects.create(
         user=therapist_user_2,
         display_name="Dr. T2",
@@ -62,8 +66,9 @@ def therapist_profile_2(therapist_user_2, clinic):
 
 @pytest.fixture
 def patient(therapist_profile, clinic):
-    from referrals.models import Referral, ReferralStatus
     from patients.models import Patient
+    from referrals.models import Referral, ReferralStatus
+
     ref = Referral.objects.create(
         clinic=clinic,
         patient_name="Jane",
@@ -82,8 +87,9 @@ def patient(therapist_profile, clinic):
 
 @pytest.fixture
 def patient_2(therapist_profile_2, clinic):
-    from referrals.models import Referral, ReferralStatus
     from patients.models import Patient
+    from referrals.models import Referral, ReferralStatus
+
     ref = Referral.objects.create(
         clinic=clinic,
         patient_name="Bob",
@@ -103,8 +109,11 @@ def patient_2(therapist_profile_2, clinic):
 @pytest.fixture
 def appointment(patient, therapist_profile):
     from datetime import timedelta
+
     from django.utils import timezone
+
     from appointments.models import Appointment
+
     start = timezone.now().replace(hour=10, minute=0, second=0, microsecond=0)
     end = start + timedelta(minutes=50)
     return Appointment.objects.create(
@@ -119,6 +128,7 @@ def appointment(patient, therapist_profile):
 @pytest.fixture
 def referral(help_seeker_user, clinic, therapist_profile):
     from referrals.models import Referral, ReferralStatus
+
     return Referral.objects.create(
         clinic=clinic,
         patient_name="Alice",
@@ -134,6 +144,7 @@ def referral_other(help_seeker_user, clinic):
     """Referral by another help-seeker (we'll create a different user)."""
     other_user = User.objects.create_user(email="other@test.com", password="x", role="help_seeker")
     from referrals.models import Referral, ReferralStatus
+
     return Referral.objects.create(
         clinic=clinic,
         patient_name="Other",
@@ -175,7 +186,9 @@ class TestReferralPermissionBypass:
     def test_help_seeker_cannot_patch_referral_status(self, help_seeker_user, referral):
         client = APIClient()
         client.force_authenticate(user=help_seeker_user)
-        resp = client.patch(f"/api/v1/referrals/{referral.id}/", {"status": "approved"}, format="json")
+        resp = client.patch(
+            f"/api/v1/referrals/{referral.id}/", {"status": "approved"}, format="json"
+        )
         assert resp.status_code == status.HTTP_403_FORBIDDEN
 
 
@@ -193,9 +206,13 @@ class TestAppointmentPermissionBypass:
         )
         assert resp.status_code == status.HTTP_403_FORBIDDEN
 
-    def test_help_seeker_cannot_book_appointment(self, help_seeker_user, patient, therapist_profile):
+    def test_help_seeker_cannot_book_appointment(
+        self, help_seeker_user, patient, therapist_profile
+    ):
         from datetime import timedelta
+
         from django.utils import timezone
+
         client = APIClient()
         client.force_authenticate(user=help_seeker_user)
         start = timezone.now() + timedelta(days=1)

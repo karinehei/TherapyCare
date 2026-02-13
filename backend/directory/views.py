@@ -4,12 +4,13 @@ GET /api/v1/therapists - search + filters (public or authenticated)
 GET /api/v1/therapists/{id} - detail
 PATCH /api/v1/therapists/me - therapist edits own profile
 """
+
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.throttling import AnonRateThrottle
 from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from accounts.permissions import user_is_therapist
@@ -44,9 +45,11 @@ class TherapistProfileViewSet(ReadOnlyModelViewSet):
     def get_queryset_base(self, for_detail=False):
         """Base queryset. List: lightweight. Detail: full prefetch."""
         if for_detail:
-            return TherapistProfile.objects.select_related(
-                "user", "clinic", "location"
-            ).prefetch_related("availability_slots").all()
+            return (
+                TherapistProfile.objects.select_related("user", "clinic", "location")
+                .prefetch_related("availability_slots")
+                .all()
+            )
         return TherapistProfile.objects.select_related("user").all()
 
     def get_queryset(self):
@@ -93,17 +96,13 @@ class TherapistProfileViewSet(ReadOnlyModelViewSet):
         if price_min is not None:
             try:
                 price_min_val = float(price_min)
-                qs = qs.filter(
-                    Q(price_max__isnull=True) | Q(price_max__gte=price_min_val)
-                )
+                qs = qs.filter(Q(price_max__isnull=True) | Q(price_max__gte=price_min_val))
             except (ValueError, TypeError):
                 pass
         if price_max is not None:
             try:
                 price_max_val = float(price_max)
-                qs = qs.filter(
-                    Q(price_min__isnull=True) | Q(price_min__lte=price_max_val)
-                )
+                qs = qs.filter(Q(price_min__isnull=True) | Q(price_min__lte=price_max_val))
             except (ValueError, TypeError):
                 pass
 

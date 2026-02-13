@@ -1,4 +1,5 @@
 """Referral and intake models."""
+
 from django.db import models
 
 from accounts.models import User
@@ -32,7 +33,11 @@ class Referral(models.Model):
         max_length=20, choices=ReferralStatus.choices, default=ReferralStatus.NEW, db_index=True
     )
     assigned_therapist = models.ForeignKey(
-        TherapistProfile, on_delete=models.SET_NULL, null=True, blank=True, related_name="assigned_referrals"
+        TherapistProfile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="assigned_referrals",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -2,6 +2,7 @@
 Directory models: TherapistProfile, AvailabilitySlot, Location.
 Full-text search on display_name + bio + specialties.
 """
+
 from django.db import models
 
 from accounts.models import User
@@ -13,6 +14,7 @@ class Location(models.Model):
     Optional: lat/lng for future geo search (PostGIS).
     Therapists can have a location for in-person sessions.
     """
+
     lat = models.DecimalField(max_digits=9, decimal_places=6)
     lng = models.DecimalField(max_digits=9, decimal_places=6)
     address = models.CharField(max_length=255, blank=True)
@@ -29,6 +31,7 @@ class TherapistProfile(models.Model):
     Therapist profile in directory.
     display_name + bio + specialties used for full-text search.
     """
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="therapist_profile")
     display_name = models.CharField(max_length=200)
     bio = models.TextField(blank=True)
@@ -57,7 +60,10 @@ class TherapistProfile(models.Model):
 
 class AvailabilitySlot(models.Model):
     """Therapist availability: weekday, start/end time, timezone."""
-    therapist = models.ForeignKey(TherapistProfile, on_delete=models.CASCADE, related_name="availability_slots")
+
+    therapist = models.ForeignKey(
+        TherapistProfile, on_delete=models.CASCADE, related_name="availability_slots"
+    )
     weekday = models.PositiveSmallIntegerField()  # 0=Monday, 6=Sunday
     start_time = models.TimeField()
     end_time = models.TimeField()

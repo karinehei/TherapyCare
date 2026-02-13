@@ -2,6 +2,7 @@
 Development settings.
 Overrides base for local development: DEBUG on, permissive CORS.
 """
+
 from .base import *  # noqa: F401, F403
 
 DEBUG = True

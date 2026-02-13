@@ -1,7 +1,8 @@
 """Appointment permissions: therapist, clinic admin, note masking."""
+
 from rest_framework import permissions
 
-from accounts.permissions import user_is_clinic_admin, user_is_therapist, user_is_support
+from accounts.permissions import user_is_clinic_admin, user_is_support, user_is_therapist
 
 
 def user_can_book_appointment(user):

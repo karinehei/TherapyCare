@@ -2,6 +2,7 @@
 Base Django settings for TherapyCare.
 All config via env vars (12-factor). Use dev.py or prod.py for environment overrides.
 """
+
 from datetime import timedelta
 from pathlib import Path
 
@@ -138,7 +139,9 @@ CORS_ALLOWED_ORIGINS = env.list(
 
 # SimpleJWT: token lifetimes, blacklist for logout
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=env.int("JWT_ACCESS_TOKEN_LIFETIME_MINUTES", default=60)),
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=env.int("JWT_ACCESS_TOKEN_LIFETIME_MINUTES", default=60)
+    ),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,

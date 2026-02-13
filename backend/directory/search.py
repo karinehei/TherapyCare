@@ -3,6 +3,7 @@ Postgres full-text search on display_name + bio + specialties.
 Uses SearchVector in queryset (no stored column required).
 specialties is JSONField - cast to text for search.
 """
+
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db import models
 from django.db.models import TextField
@@ -22,9 +23,7 @@ def search_therapists(queryset, query: str):
     if connection.vendor != "postgresql":
         # Fallback for SQLite (e.g. tests)
         q = query.strip()
-        return queryset.filter(
-            models.Q(display_name__icontains=q) | models.Q(bio__icontains=q)
-        )
+        return queryset.filter(models.Q(display_name__icontains=q) | models.Q(bio__icontains=q))
 
     # Cast JSONField specialties to text for SearchVector
     vector = (

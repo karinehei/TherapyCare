@@ -1,9 +1,9 @@
 """Account views: register, login, logout, me."""
+
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-
 from rest_framework_simplejwt.views import TokenBlacklistView, TokenObtainPairView
 
 from audit.service import log_event
@@ -43,6 +43,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         response = super().post(request, *args, **kwargs)
         if response.status_code == status.HTTP_200_OK:
             from accounts.models import User
+
             email = request.data.get("email") or request.data.get("username")
             if email:
                 user = User.objects.filter(email=email).first()
@@ -69,12 +70,14 @@ class AuditedTokenBlacklistView(TokenBlacklistView):
             refresh = request.data.get("refresh")
             if refresh:
                 try:
-                    from rest_framework_simplejwt.tokens import RefreshToken
                     from django.conf import settings
+                    from rest_framework_simplejwt.tokens import RefreshToken
+
                     token = RefreshToken(refresh)
                     claim = getattr(settings, "SIMPLE_JWT", {}).get("USER_ID_CLAIM", "user_id")
                     user_id = token.get(claim)
                     from accounts.models import User
+
                     user = User.objects.filter(id=user_id).first()
                 except Exception:
                     pass

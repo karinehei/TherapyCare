@@ -1,4 +1,5 @@
 """Patient views: GET list (role-filtered), GET detail."""
+
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from accounts.permissions import user_is_clinic_admin, user_is_therapist
@@ -20,7 +21,12 @@ class PatientViewSet(PatientAuditMixin, ReadOnlyModelViewSet):
     def get_queryset(self):
         qs = (
             Patient.objects.select_related("clinic", "owner_therapist", "referral")
-            .prefetch_related("appointments", "appointments__therapist", "referral__notes", "referral__questionnaires")
+            .prefetch_related(
+                "appointments",
+                "appointments__therapist",
+                "referral__notes",
+                "referral__questionnaires",
+            )
             .order_by("name")
         )
         if user_is_clinic_admin(self.request.user) or self.request.user.is_staff:

@@ -1,4 +1,5 @@
 """Seed demo data: 1 clinic, 2 therapists, 1 admin, 2 help-seekers, 10 therapist profiles, referrals, appointments."""
+
 from datetime import time, timedelta
 
 from django.core.management.base import BaseCommand
@@ -6,13 +7,12 @@ from django.db import transaction
 from django.utils import timezone
 
 from accounts.models import User
+from appointments.models import Appointment, SessionNote
 from clinics.models import Clinic, Membership
 from directory.models import AvailabilitySlot, TherapistProfile
 from patients.models import Patient, PatientAccess, PatientAccessType
 from referrals.models import Referral, ReferralStatus
 from referrals.patient_creation import maybe_create_patient_for_referral
-from appointments.models import Appointment, SessionNote
-
 
 DEMO_CLINIC = {
     "name": "Downtown Wellness Clinic",
@@ -22,26 +22,100 @@ DEMO_CLINIC = {
 }
 
 THERAPIST_SPECS = [
-    {"display_name": "Dr. Sarah Chen", "city": "San Francisco", "specialties": ["Anxiety", "Depression", "CBT"], "languages": ["English", "Mandarin"]},
-    {"display_name": "Dr. Marcus Johnson", "city": "Oakland", "specialties": ["PTSD", "Trauma", "EMDR"], "languages": ["English", "Spanish"]},
-    {"display_name": "Dr. Emily Rodriguez", "city": "San Jose", "specialties": ["Family Therapy", "Couples", "Adolescents"], "languages": ["English", "Spanish"]},
-    {"display_name": "Dr. James Wilson", "city": "San Francisco", "specialties": ["Addiction", "Substance Use", "CBT"], "languages": ["English"]},
-    {"display_name": "Dr. Aisha Patel", "city": "Berkeley", "specialties": ["Anxiety", "OCD", "DBT"], "languages": ["English", "Hindi"]},
-    {"display_name": "Dr. David Kim", "city": "San Francisco", "specialties": ["Depression", "Bipolar", "Medication Management"], "languages": ["English", "Korean"]},
-    {"display_name": "Dr. Lisa Nguyen", "city": "San Jose", "specialties": ["Cultural Issues", "Immigration", "Anxiety"], "languages": ["English", "Vietnamese"]},
-    {"display_name": "Dr. Robert Martinez", "city": "Oakland", "specialties": ["Men's Issues", "Anger", "Career"], "languages": ["English", "Spanish"]},
-    {"display_name": "Dr. Jennifer Taylor", "city": "San Francisco", "specialties": ["Eating Disorders", "Body Image", "DBT"], "languages": ["English"]},
-    {"display_name": "Dr. Michael O'Brien", "city": "Berkeley", "specialties": ["LGBTQ+", "Identity", "Anxiety"], "languages": ["English", "Irish"]},
+    {
+        "display_name": "Dr. Sarah Chen",
+        "city": "San Francisco",
+        "specialties": ["Anxiety", "Depression", "CBT"],
+        "languages": ["English", "Mandarin"],
+    },
+    {
+        "display_name": "Dr. Marcus Johnson",
+        "city": "Oakland",
+        "specialties": ["PTSD", "Trauma", "EMDR"],
+        "languages": ["English", "Spanish"],
+    },
+    {
+        "display_name": "Dr. Emily Rodriguez",
+        "city": "San Jose",
+        "specialties": ["Family Therapy", "Couples", "Adolescents"],
+        "languages": ["English", "Spanish"],
+    },
+    {
+        "display_name": "Dr. James Wilson",
+        "city": "San Francisco",
+        "specialties": ["Addiction", "Substance Use", "CBT"],
+        "languages": ["English"],
+    },
+    {
+        "display_name": "Dr. Aisha Patel",
+        "city": "Berkeley",
+        "specialties": ["Anxiety", "OCD", "DBT"],
+        "languages": ["English", "Hindi"],
+    },
+    {
+        "display_name": "Dr. David Kim",
+        "city": "San Francisco",
+        "specialties": ["Depression", "Bipolar", "Medication Management"],
+        "languages": ["English", "Korean"],
+    },
+    {
+        "display_name": "Dr. Lisa Nguyen",
+        "city": "San Jose",
+        "specialties": ["Cultural Issues", "Immigration", "Anxiety"],
+        "languages": ["English", "Vietnamese"],
+    },
+    {
+        "display_name": "Dr. Robert Martinez",
+        "city": "Oakland",
+        "specialties": ["Men's Issues", "Anger", "Career"],
+        "languages": ["English", "Spanish"],
+    },
+    {
+        "display_name": "Dr. Jennifer Taylor",
+        "city": "San Francisco",
+        "specialties": ["Eating Disorders", "Body Image", "DBT"],
+        "languages": ["English"],
+    },
+    {
+        "display_name": "Dr. Michael O'Brien",
+        "city": "Berkeley",
+        "specialties": ["LGBTQ+", "Identity", "Anxiety"],
+        "languages": ["English", "Irish"],
+    },
 ]
 
 DEMO_USERS = [
     # clinic_admin
-    {"email": "admin@therapycare.demo", "password": "demo123", "role": "clinic_admin", "first_name": "Clinic", "last_name": "Admin"},
+    {
+        "email": "admin@therapycare.demo",
+        "password": "demo123",
+        "role": "clinic_admin",
+        "first_name": "Clinic",
+        "last_name": "Admin",
+    },
     # help_seekers
-    {"email": "alice@therapycare.demo", "password": "demo123", "role": "help_seeker", "first_name": "Alice", "last_name": "Smith"},
-    {"email": "bob@therapycare.demo", "password": "demo123", "role": "help_seeker", "first_name": "Bob", "last_name": "Jones"},
+    {
+        "email": "alice@therapycare.demo",
+        "password": "demo123",
+        "role": "help_seeker",
+        "first_name": "Alice",
+        "last_name": "Smith",
+    },
+    {
+        "email": "bob@therapycare.demo",
+        "password": "demo123",
+        "role": "help_seeker",
+        "first_name": "Bob",
+        "last_name": "Jones",
+    },
     # support (for audit demo)
-    {"email": "support@therapycare.demo", "password": "demo123", "role": "support", "first_name": "Support", "last_name": "User"},
+    {
+        "email": "support@therapycare.demo",
+        "password": "demo123",
+        "role": "support",
+        "first_name": "Support",
+        "last_name": "User",
+    },
 ]
 
 
@@ -62,7 +136,9 @@ class Command(BaseCommand):
             therapists, admin_user, help_seekers, support_user = self._ensure_users(force)
             profiles = self._ensure_therapist_profiles(clinic, therapists, force)
             self._ensure_memberships(clinic, therapists, admin_user, force)
-            referrals, patients = self._ensure_referrals_and_patients(clinic, profiles, help_seekers, force)
+            referrals, patients = self._ensure_referrals_and_patients(
+                clinic, profiles, help_seekers, force
+            )
             self._ensure_appointments(patients, profiles, force)
             self._ensure_availability(profiles, force)
         self.stdout.write(self.style.SUCCESS("Demo seed complete. See README for credentials."))
@@ -78,7 +154,7 @@ class Command(BaseCommand):
 
     def _ensure_users(self, force):
         all_emails = [u["email"] for u in DEMO_USERS]
-        for i, spec in enumerate(THERAPIST_SPECS):
+        for i, _spec in enumerate(THERAPIST_SPECS):
             email = f"therapist{i + 1}@therapycare.demo"
             all_emails.append(email)
 
@@ -103,7 +179,11 @@ class Command(BaseCommand):
             email = f"therapist{i + 1}@therapycare.demo"
             user, created = User.objects.update_or_create(
                 email=email,
-                defaults={"role": "therapist", "first_name": f"Therapist{i + 1}", "last_name": "Demo"},
+                defaults={
+                    "role": "therapist",
+                    "first_name": f"Therapist{i + 1}",
+                    "last_name": "Demo",
+                },
             )
             if created or force:
                 user.set_password("demo123")
@@ -117,7 +197,7 @@ class Command(BaseCommand):
 
     def _ensure_therapist_profiles(self, clinic, therapists, force):
         profiles = []
-        for i, (user, spec) in enumerate(zip(therapists, THERAPIST_SPECS)):
+        for i, (user, spec) in enumerate(zip(therapists, THERAPIST_SPECS, strict=False)):
             # First 2 therapists belong to clinic; rest are directory-only
             prof_clinic = clinic if i < 2 else None
             profile, created = TherapistProfile.objects.update_or_create(
@@ -147,10 +227,34 @@ class Command(BaseCommand):
         patients = []
 
         ref_data = [
-            {"name": "Alice Smith", "email": "alice@therapycare.demo", "requester": help_seekers[0], "therapist": profiles[0], "status": ReferralStatus.APPROVED},
-            {"name": "Bob Jones", "email": "bob@therapycare.demo", "requester": help_seekers[1], "therapist": profiles[1], "status": ReferralStatus.APPROVED},
-            {"name": "Carol Doe", "email": "carol@example.com", "requester": None, "therapist": profiles[2], "status": ReferralStatus.NEW},
-            {"name": "Dan Brown", "email": "dan@example.com", "requester": help_seekers[0], "therapist": None, "status": ReferralStatus.NEEDS_INFO},
+            {
+                "name": "Alice Smith",
+                "email": "alice@therapycare.demo",
+                "requester": help_seekers[0],
+                "therapist": profiles[0],
+                "status": ReferralStatus.APPROVED,
+            },
+            {
+                "name": "Bob Jones",
+                "email": "bob@therapycare.demo",
+                "requester": help_seekers[1],
+                "therapist": profiles[1],
+                "status": ReferralStatus.APPROVED,
+            },
+            {
+                "name": "Carol Doe",
+                "email": "carol@example.com",
+                "requester": None,
+                "therapist": profiles[2],
+                "status": ReferralStatus.NEW,
+            },
+            {
+                "name": "Dan Brown",
+                "email": "dan@example.com",
+                "requester": help_seekers[0],
+                "therapist": None,
+                "status": ReferralStatus.NEEDS_INFO,
+            },
         ]
 
         for rd in ref_data:
@@ -199,7 +303,10 @@ class Command(BaseCommand):
             if created and i == 0:
                 SessionNote.objects.get_or_create(
                     appointment=appt,
-                    defaults={"author": therapist, "body": "Initial assessment completed. Client engaged well."},
+                    defaults={
+                        "author": therapist,
+                        "body": "Initial assessment completed. Client engaged well.",
+                    },
                 )
         self.stdout.write(f"Appointments: {Appointment.objects.count()}")
 

@@ -5,7 +5,8 @@ Usage:
   locust -f scripts/locust_therapists.py --host=http://localhost:8000
   # Open http://localhost:8089 for web UI
 """
-from locust import HttpUser, task, between
+
+from locust import HttpUser, between, task
 
 
 class TherapistUser(HttpUser):

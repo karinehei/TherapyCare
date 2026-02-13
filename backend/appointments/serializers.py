@@ -1,4 +1,5 @@
 """Appointment serializers. SessionNote body masked for clinic admin."""
+
 from rest_framework import serializers
 
 from .models import Appointment, SessionNote

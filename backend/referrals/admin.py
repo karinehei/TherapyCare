@@ -1,11 +1,20 @@
 """Admin for referrals."""
+
 from django.contrib import admin
+
 from .models import Questionnaire, Referral, ReferralNote
 
 
 @admin.register(Referral)
 class ReferralAdmin(admin.ModelAdmin):
-    list_display = ("patient_name", "patient_email", "clinic", "status", "assigned_therapist", "created_at")
+    list_display = (
+        "patient_name",
+        "patient_email",
+        "clinic",
+        "status",
+        "assigned_therapist",
+        "created_at",
+    )
     list_filter = ("status", "clinic")
     search_fields = ("patient_name", "patient_email")
 

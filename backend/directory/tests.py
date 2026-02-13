@@ -1,10 +1,11 @@
 """Directory tests: search, filters, permissions."""
+
 import pytest
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from directory.models import AvailabilitySlot, TherapistProfile
+from directory.models import TherapistProfile
 
 User = get_user_model()
 

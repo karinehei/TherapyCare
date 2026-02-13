@@ -1,4 +1,5 @@
 """Patient tests: permissions, role-filtered list."""
+
 import pytest
 from django.contrib.auth import get_user_model
 from rest_framework import status
@@ -6,7 +7,7 @@ from rest_framework.test import APIClient
 
 from clinics.models import Clinic
 from directory.models import TherapistProfile
-from patients.models import Patient, PatientAccess
+from patients.models import Patient
 
 User = get_user_model()
 

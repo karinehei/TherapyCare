@@ -1,5 +1,4 @@
 """DRF mixin for audit logging on Patient, Appointment, Referral, SessionNote."""
-from rest_framework import viewsets
 
 from .service import (
     ENTITY_APPOINTMENT,

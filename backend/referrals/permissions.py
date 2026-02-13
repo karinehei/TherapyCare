@@ -1,4 +1,5 @@
 """Referral permissions: help-seeker, clinic admin, therapist."""
+
 from rest_framework import permissions
 
 from accounts.permissions import user_is_clinic_admin, user_is_help_seeker, user_is_therapist
@@ -58,7 +59,9 @@ class ReferralPermission(permissions.BasePermission):
             if user_is_clinic_admin(request.user) or request.user.is_staff:
                 return True
             if user_is_therapist(request.user):
-                return obj.assigned_therapist_id and obj.assigned_therapist.user_id == request.user.id
+                return (
+                    obj.assigned_therapist_id and obj.assigned_therapist.user_id == request.user.id
+                )
             if user_is_help_seeker(request.user):
                 return obj.requester_user_id == request.user.id
             return False

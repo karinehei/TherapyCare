@@ -1,4 +1,5 @@
 """Referral URLs: /api/v1/referrals."""
+
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 

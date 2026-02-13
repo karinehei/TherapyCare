@@ -4,6 +4,7 @@ Object-level permission helpers.
 - Clinic admin: full access to clinic resources
 - Support: read audit logs (sensitive fields masked)
 """
+
 from rest_framework import permissions
 
 
@@ -114,4 +115,8 @@ class SupportCanReadAudit(permissions.BasePermission):
             return False
         if request.method not in permissions.SAFE_METHODS:
             return False
-        return user_is_support(request.user) or user_is_clinic_admin(request.user) or request.user.is_staff
+        return (
+            user_is_support(request.user)
+            or user_is_clinic_admin(request.user)
+            or request.user.is_staff
+        )

@@ -8,9 +8,9 @@ Usage:
 import argparse
 import statistics
 import time
-import urllib.request
 import urllib.error
 import urllib.parse
+import urllib.request
 
 
 def load_test(base_url: str, num_users: int, requests_per_user: int) -> dict:
@@ -18,7 +18,7 @@ def load_test(base_url: str, num_users: int, requests_per_user: int) -> dict:
     base_url = base_url.rstrip("/")
     results = []
 
-    for i in range(num_users * requests_per_user):
+    for _i in range(num_users * requests_per_user):
         url = f"{base_url}/api/v1/therapists/?page_size=20"
         start = time.perf_counter()
         try:
@@ -41,7 +41,11 @@ def load_test(base_url: str, num_users: int, requests_per_user: int) -> dict:
         "max_ms": max(results) * 1000,
         "mean_ms": statistics.mean(results) * 1000,
         "median_ms": statistics.median(results) * 1000,
-        "p95_ms": sorted(results)[int(len(results) * 0.95)] * 1000 if len(results) >= 20 else max(results) * 1000,
+        "p95_ms": (
+            sorted(results)[int(len(results) * 0.95)] * 1000
+            if len(results) >= 20
+            else max(results) * 1000
+        ),
     }
 
 

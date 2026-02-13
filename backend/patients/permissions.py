@@ -1,4 +1,5 @@
 """Patient permissions: role-filtered access."""
+
 from rest_framework import permissions
 
 from accounts.permissions import user_is_clinic_admin, user_is_help_seeker, user_is_therapist
@@ -9,14 +10,13 @@ def user_has_patient_access(user, patient):
     if user_is_clinic_admin(user) or user.is_staff:
         return True
     if user_is_therapist(user):
-        return patient.owner_therapist.user_id == user.id or patient.access_grants.filter(
-            user=user
-        ).exists()
+        return (
+            patient.owner_therapist.user_id == user.id
+            or patient.access_grants.filter(user=user).exists()
+        )
     if user_is_help_seeker(user):
         return patient.access_grants.filter(user=user).exists()
-    return patient.access_grants.filter(
-        user=user, access_type="support_readonly"
-    ).exists()
+    return patient.access_grants.filter(user=user, access_type="support_readonly").exists()
 
 
 class PatientPermission(permissions.BasePermission):

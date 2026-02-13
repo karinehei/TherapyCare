@@ -1,5 +1,7 @@
 """Admin for patients."""
+
 from django.contrib import admin
+
 from .models import Consent, Patient, PatientAccess, PatientProfile
 
 

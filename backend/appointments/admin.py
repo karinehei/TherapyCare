@@ -1,5 +1,7 @@
 """Admin for appointments."""
+
 from django.contrib import admin
+
 from .models import Appointment, SessionNote
 
 

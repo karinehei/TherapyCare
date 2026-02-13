@@ -1,5 +1,4 @@
 """Directory serializers with validation."""
-from decimal import Decimal
 
 from rest_framework import serializers
 
@@ -99,9 +98,8 @@ class TherapistProfileUpdateSerializer(serializers.ModelSerializer):
     def validate(self, data):
         price_min = data.get("price_min")
         price_max = data.get("price_max")
-        if price_min is not None and price_max is not None:
-            if price_min > price_max:
-                raise serializers.ValidationError("price_min cannot exceed price_max")
+        if price_min is not None and price_max is not None and price_min > price_max:
+            raise serializers.ValidationError("price_min cannot exceed price_max")
         if "languages" in data and not isinstance(data["languages"], list):
             raise serializers.ValidationError("languages must be a list")
         if "specialties" in data and not isinstance(data["specialties"], list):

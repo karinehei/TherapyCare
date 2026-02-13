@@ -2,6 +2,7 @@
 User and role models.
 Custom User with email as username. Roles: HELP_SEEKER, THERAPIST, CLINIC_ADMIN, SUPPORT.
 """
+
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
@@ -46,7 +47,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, db_index=True)
     first_name = models.CharField(max_length=150, blank=True)
     last_name = models.CharField(max_length=150, blank=True)
-    role = models.CharField(max_length=32, choices=Role.choices, default=Role.HELP_SEEKER, db_index=True)
+    role = models.CharField(
+        max_length=32, choices=Role.choices, default=Role.HELP_SEEKER, db_index=True
+    )
     phone = models.CharField(max_length=20, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

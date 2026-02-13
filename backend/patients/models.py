@@ -1,7 +1,11 @@
 """Patient and access models."""
+
 from django.db import models
 
 from accounts.models import User
+from clinics.models import Clinic
+from directory.models import TherapistProfile
+from referrals.models import Referral
 
 
 class PatientProfile(models.Model):
@@ -31,14 +35,11 @@ class Consent(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["patient", "consent_type"], name="patients_consent_patient_type_unique")
+            models.UniqueConstraint(
+                fields=["patient", "consent_type"], name="patients_consent_patient_type_unique"
+            )
         ]
         indexes = [models.Index(fields=["patient"], name="patients_co_patient__idx")]
-
-
-from clinics.models import Clinic
-from directory.models import TherapistProfile
-from referrals.models import Referral
 
 
 class Patient(models.Model):
@@ -85,7 +86,9 @@ class PatientAccess(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["patient", "user"], name="patients_access_patient_user_unique")
+            models.UniqueConstraint(
+                fields=["patient", "user"], name="patients_access_patient_user_unique"
+            )
         ]
         indexes = [
             models.Index(fields=["patient"]),

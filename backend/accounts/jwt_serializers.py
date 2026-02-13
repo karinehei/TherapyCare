@@ -1,4 +1,5 @@
 """JWT serializers: use email for login (User.USERNAME_FIELD = email)."""
+
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 

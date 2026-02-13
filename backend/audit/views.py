@@ -1,7 +1,7 @@
 """Audit views. Support role only. Filters: actor, date range, entity_type."""
+
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
-
 from rest_framework import viewsets
 from rest_framework.permissions import BasePermission
 

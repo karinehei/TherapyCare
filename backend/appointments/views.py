@@ -1,12 +1,13 @@
 """Appointment views: booking, calendar list, session note."""
+
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from accounts.permissions import user_is_clinic_admin, user_is_therapist, user_is_support
+from accounts.permissions import user_is_clinic_admin, user_is_support, user_is_therapist
 from audit.mixins import AppointmentAuditMixin
-from audit.service import log_event, ENTITY_APPOINTMENT, ENTITY_SESSION_NOTE
+from audit.service import ENTITY_APPOINTMENT, ENTITY_SESSION_NOTE, log_event
 
 from .models import Appointment, SessionNote
 from .permissions import AppointmentPermission
@@ -64,16 +65,16 @@ class AppointmentViewSet(AppointmentAuditMixin, ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         # Audit log (mixin would run after super; we call explicitly to run after get_object)
-        log_event(action="view", entity_type=ENTITY_APPOINTMENT, entity_id=instance.id, request=request)
+        log_event(
+            action="view", entity_type=ENTITY_APPOINTMENT, entity_id=instance.id, request=request
+        )
         # Mask session note body for clinic admin/support (not assigned therapist)
-        if user_is_support(request.user):
+        is_support = user_is_support(request.user)
+        is_admin = user_is_clinic_admin(request.user)
+        is_therapist = user_is_therapist(request.user)
+        is_assigned_therapist = instance.therapist.user_id == request.user.id
+        if is_support or (is_admin and (not is_therapist or not is_assigned_therapist)):
             request._mask_session_note = True
-        elif user_is_clinic_admin(request.user) and not user_is_therapist(request.user):
-            request._mask_session_note = True
-        elif user_is_clinic_admin(request.user) and user_is_therapist(request.user):
-            # If they're both, check if they're the therapist for this appointment
-            if instance.therapist.user_id != request.user.id:
-                request._mask_session_note = True
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 

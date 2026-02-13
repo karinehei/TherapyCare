@@ -1,4 +1,5 @@
 """Referral tests: create, list, update, state transitions, notes, questionnaires."""
+
 import pytest
 from django.contrib.auth import get_user_model
 from rest_framework import status

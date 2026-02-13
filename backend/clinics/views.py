@@ -1,10 +1,12 @@
 """Clinic views. CRUD limited to clinic admins."""
+
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.throttling import AnonRateThrottle
 
-from .models import Clinic, Membership
 from accounts.permissions import IsClinicAdmin
+
+from .models import Clinic, Membership
 from .serializers import ClinicSerializer, MembershipSerializer
 
 

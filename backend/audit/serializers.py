@@ -1,4 +1,5 @@
 """Audit serializers. Sensitive fields never exposed in API response."""
+
 from rest_framework import serializers
 
 from .models import AuditEvent
@@ -10,7 +11,17 @@ class AuditEventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AuditEvent
-        fields = ["id", "actor", "action", "entity_type", "entity_id", "metadata", "ip", "user_agent", "created_at"]
+        fields = [
+            "id",
+            "actor",
+            "action",
+            "entity_type",
+            "entity_id",
+            "metadata",
+            "ip",
+            "user_agent",
+            "created_at",
+        ]
         read_only_fields = fields
 
     def to_representation(self, instance):

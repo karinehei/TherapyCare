@@ -1,15 +1,16 @@
 """Seed database with sample data."""
+
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from accounts.models import User
-from clinics.models import Clinic, Membership
-from directory.models import AvailabilitySlot, TherapistProfile
-from patients.models import Patient, PatientProfile, Consent
-from referrals.models import Referral, ReferralStatus
-from referrals.patient_creation import maybe_create_patient_for_referral
 from appointments.models import Appointment
 from audit.models import AuditEvent
+from clinics.models import Clinic, Membership
+from directory.models import AvailabilitySlot, TherapistProfile
+from patients.models import Consent, Patient, PatientProfile
+from referrals.models import Referral, ReferralStatus
+from referrals.patient_creation import maybe_create_patient_for_referral
 
 
 class Command(BaseCommand):
@@ -107,11 +108,9 @@ class Command(BaseCommand):
         self.stdout.write("Created referral and patient.")
 
     def _seed_appointments(self):
-        from datetime import timedelta, time
+        from datetime import time, timedelta
 
         from django.utils import timezone
-
-        from directory.models import AvailabilitySlot
 
         if AvailabilitySlot.objects.exists():
             self.stdout.write("Availability already exists, skipping.")

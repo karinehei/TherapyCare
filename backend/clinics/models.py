@@ -2,6 +2,7 @@
 Clinic and membership models.
 Membership links User <-> Clinic with role: therapist or admin.
 """
+
 from django.db import models
 
 from accounts.models import User
@@ -38,7 +39,9 @@ class Membership(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["user", "clinic"], name="clinics_membership_user_clinic_unique")
+            models.UniqueConstraint(
+                fields=["user", "clinic"], name="clinics_membership_user_clinic_unique"
+            )
         ]
         indexes = [
             models.Index(fields=["clinic"]),

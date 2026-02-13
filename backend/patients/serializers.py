@@ -1,7 +1,8 @@
 """Patient serializers."""
+
 from rest_framework import serializers
 
-from .models import Patient, PatientAccess
+from .models import Patient
 
 
 class PatientListSerializer(serializers.ModelSerializer):
