@@ -6,7 +6,8 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "noEmit": true
+    "declaration": true,
+    "emitDeclarationOnly": true
   },
   "include": ["vite.config.ts", "vite.config-shims.d.ts"]
 }
