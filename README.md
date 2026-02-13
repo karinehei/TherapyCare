@@ -4,7 +4,6 @@ Modular monolith for therapy clinic management: referrals, appointments, patient
 
 [![CI](https://github.com/karinehei/TherapyCare/actions/workflows/ci.yml/badge.svg)](https://github.com/karinehei/TherapyCare/actions/workflows/ci.yml)
 
-> Replace `OWNER` with your GitHub org/username in the badge URL.
 
 ## Dashboard
 
@@ -14,9 +13,15 @@ Search and filter licensed therapists by name, specialty, language, city, and pr
 
 ## Admin
 
-![TherapyCare Django Admin](docs/admin.gif)
+![TherapyCare Django Admin](docs/admin.png)
 
 Staff and clinic admins manage referrals, appointments, patients, and therapist profiles via the Django Daisy admin at `/admin/`.
+
+## API
+
+![TherapyCare REST API](docs/api-docs.png)
+
+Interactive OpenAPI (Swagger) documentation at `/api/docs/`. Auth, clinics, patients, appointments, referrals, and audit endpoints with JWT support.
 
 ---
 
