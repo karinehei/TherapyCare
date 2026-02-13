@@ -84,7 +84,9 @@ class AppointmentViewSet(AppointmentAuditMixin, ModelViewSet):
         # Important: therapists are scoped to their own appointments in get_queryset().
         # For the note endpoint we intentionally return 403 (not 404) when a therapist
         # targets an appointment they don't own (permission bypass test expectation).
-        appointment = Appointment.objects.select_related("therapist", "therapist__user").filter(pk=pk).first()
+        appointment = (
+            Appointment.objects.select_related("therapist", "therapist__user").filter(pk=pk).first()
+        )
         if not appointment:
             return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
         if appointment.therapist.user_id != request.user.id:
