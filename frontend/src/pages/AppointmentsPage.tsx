@@ -8,6 +8,7 @@ import type { AppointmentList } from "@/api/schemas";
 const schema = paginatedSchema(appointmentListSchema);
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const EMPTY_APPOINTMENTS: AppointmentList[] = [];
 
 function getWeekStart(d: Date): Date {
   const date = new Date(d);
@@ -49,7 +50,7 @@ export function AppointmentsPage() {
     },
   });
 
-  const results = data?.results ?? [];
+  const results = data?.results ?? EMPTY_APPOINTMENTS;
   const byDay = useMemo(() => groupByDay(results), [results]);
   const weekDays = useMemo(() => getWeekRange(weekStart), [weekStart]);
 
