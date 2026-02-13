@@ -1,9 +1,17 @@
-/// <reference types="vitest" />
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "path";
 
-const proxyTarget = process.env.VITE_PROXY_TARGET ?? "http://localhost:8000";
+function getEnvVar(key: string): string | undefined {
+  // Avoid depending on Node type declarations (process) in TS config.
+  const env = (globalThis as unknown as { process?: { env?: Record<string, string | undefined> } }).process?.env;
+  return env?.[key];
+}
+
+const proxyTarget = getEnvVar("VITE_PROXY_TARGET") ?? "http://localhost:8000";
+const srcDirUrlPath = new URL("./src", import.meta.url).pathname;
+const srcDir =
+  // On Windows, file URL path can look like "/D:/path..." which breaks path usage.
+  srcDirUrlPath.match(/^\/[A-Za-z]:\//) ? srcDirUrlPath.slice(1) : srcDirUrlPath;
 
 export default defineConfig({
   plugins: [react()],
@@ -18,7 +26,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": srcDir,
     },
   },
   server: {

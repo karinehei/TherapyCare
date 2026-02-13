@@ -6,7 +6,8 @@ import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier";
 
 export default [
-  { ignores: ["dist", "node_modules"] },
+  // Ignore build output + generated TS build artifacts
+  { ignores: ["dist", "node_modules", "vite.config.js", "vite.config.d.ts"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
