@@ -34,15 +34,15 @@ jobs:
           --health-retries 5
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
       - name: Cache Poetry
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: backend/.venv
           key: poetry-${{ runner.os }}-${{ hashFiles('backend/poetry.lock') }}
@@ -99,10 +99,10 @@ jobs:
         working-directory: frontend
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20"
           cache: "npm"
