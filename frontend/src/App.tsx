@@ -2,9 +2,11 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { AppShell } from "./components/AppShell";
 import { ProtectedRoute } from "./auth/ProtectedRoute";
+import { isDemoMode } from "./demo/config";
 import { HomePage } from "./pages/HomePage";
 import { TherapistDetailPage } from "./pages/TherapistDetailPage";
 import { LoginPage } from "./pages/LoginPage";
+import { DemoBackendPage } from "./pages/DemoBackendPage";
 import { AppDashboard } from "./pages/AppDashboard";
 import { ReferralsPage } from "./pages/ReferralsPage";
 import { ReferralCreatePage } from "./pages/ReferralCreatePage";
@@ -23,6 +25,9 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path="therapists/:id" element={<TherapistDetailPage />} />
         <Route path="login" element={<LoginPage />} />
+        {isDemoMode && (
+          <Route path="demo/backend" element={<DemoBackendPage />} />
+        )}
       </Route>
 
       {/* Authenticated app shell */}

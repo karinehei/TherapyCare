@@ -16,7 +16,9 @@ export function Layout() {
               </Link>
             ) : (
               <Link to="/login" className="btn btn-primary">
-                Login
+                {import.meta.env.VITE_DEMO_MODE === "true"
+                  ? "Enter demo"
+                  : "Login"}
               </Link>
             )}
           </nav>

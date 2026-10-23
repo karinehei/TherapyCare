@@ -48,7 +48,12 @@ export function HomePage() {
         <h1 className="page-title">Find a Therapist</h1>
         <p className="page-subtitle">
           Search our directory of licensed therapists.{" "}
-          <Link to="/login">Login</Link> for referrals and appointments.
+          <Link to="/login">
+            {import.meta.env.VITE_DEMO_MODE === "true"
+              ? "Enter the demo"
+              : "Login"}
+          </Link>{" "}
+          for referrals and appointments.
         </p>
       </div>
 

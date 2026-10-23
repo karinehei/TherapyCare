@@ -86,7 +86,9 @@ describe("TherapistDetailPage", () => {
     );
 
     expect(
-      await screen.findByRole("link", { name: /login to request appointment/i })
+      await screen.findByRole("link", {
+        name: /login to request appointment/i,
+      })
     ).toBeInTheDocument();
   });
 
@@ -97,7 +99,7 @@ describe("TherapistDetailPage", () => {
       </Wrapper>
     );
 
-    expect(await screen.findByText("Availability")).toBeInTheDocument();
+    expect(await screen.findByText("Weekly availability")).toBeInTheDocument();
     expect(screen.getByText(/Mon/)).toBeInTheDocument();
     expect(screen.getByText(/09:00/)).toBeInTheDocument();
   });

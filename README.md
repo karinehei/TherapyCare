@@ -3,8 +3,54 @@
 Modular monolith for therapy clinic management: referrals, appointments, patient profiles, and therapist directory.
 
 [![CI](https://github.com/karinehei/TherapyCare/actions/workflows/ci.yml/badge.svg)](https://github.com/karinehei/TherapyCare/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+
+## Browser portfolio demo (GitHub Pages)
+
+**Intended address (after you publish):** [https://karinehei.github.io/TherapyCare/](https://karinehei.github.io/TherapyCare/)
+
+Visitors can explore the UI in the browser with **fictional data and simulated actions** — no install, no Django, no account, no paid services.
+
+| In the demo | Simulated | Full Django app |
+|-------------|-----------|-----------------|
+| Therapist search / filters / profiles | Local fixtures | Live PostgreSQL directory |
+| Role selection (help seeker / clinic admin) | UI-only session (not JWT) | Real email/password + JWT |
+| Referrals, status transitions, notes | In-memory + `sessionStorage` | DRF + DB + permissions |
+| Book / cancel appointments | Local consistency rules | Real booking API |
+| Audit log (clinic admin) | Illustrative events | Real audit trail |
+| Django Admin / Swagger | Screenshots + docs link | `/admin/`, `/api/docs/` |
+
+Demo mode is enabled **only** at build time with `VITE_DEMO_MODE=true` (exact string). It is never activated as a fallback when the API fails.
+
+### Preview the demo locally
+
+```bash
+cd frontend
+npm ci
+npm run build:demo
+npm run preview:demo
+```
+
+Open [http://127.0.0.1:4173/TherapyCare/](http://127.0.0.1:4173/TherapyCare/) (HashRouter: routes look like `/TherapyCare/#/app/referrals`).
+
+Optional browser checks against the built demo (no backend):
+
+```bash
+cd frontend
+npx playwright install chromium   # once
+npm run test:e2e:demo
+```
+
+### Publish to GitHub Pages
+
+1. In the GitHub repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+2. Open **Actions → Deploy Pages demo → Run workflow** (`workflow_dispatch` only; this repo does not auto-deploy Pages).
+3. When the workflow succeeds, open the intended URL above.
+
+The workflow builds only the frontend demo artifact (no backend secrets or `.env` files).
+
+---
 
 ## Dashboard
 
@@ -266,4 +312,4 @@ Dependabot is configured in `.github/dependabot.yml` for:
 
 ## License
 
-MIT License — Copyright (c) 2026 [Karine Heinonen](https://github.com/karinehei). See [LICENSE](LICENSE) for details.
+Licensed under the Apache License, Version 2.0 — Copyright 2026 [Karine Heinonen](https://github.com/karinehei). See [LICENSE](LICENSE) and [NOTICE](NOTICE) for details.

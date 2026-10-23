@@ -17,6 +17,7 @@ export function ReferralDetailPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [statusError, setStatusError] = useState<string | null>(null);
+  const [statusSuccess, setStatusSuccess] = useState<string | null>(null);
 
   const isAdmin = user?.role === "clinic_admin" || user?.is_staff;
 
@@ -52,13 +53,21 @@ export function ReferralDetailPage() {
       }
       return { prev };
     },
-    onSuccess: () => {
+    onSuccess: (_data, payload) => {
       queryClient.invalidateQueries({ queryKey: ["referral", id] });
       queryClient.invalidateQueries({ queryKey: ["referrals"] });
       queryClient.invalidateQueries({ queryKey: ["patients"] });
       setStatusError(null);
+      if (payload.status && import.meta.env.VITE_DEMO_MODE === "true") {
+        setStatusSuccess(
+          `Demo referral status updated to “${payload.status}”.`
+        );
+      } else if (payload.status) {
+        setStatusSuccess(null);
+      }
     },
     onError: (err: unknown, _vars, ctx) => {
+      setStatusSuccess(null);
       setStatusError(
         err instanceof ApiError ? String(err.detail) : "Update failed"
       );
@@ -163,6 +172,15 @@ export function ReferralDetailPage() {
                 </div>
                 {statusError && (
                   <div className="input-error-message">{statusError}</div>
+                )}
+                {statusSuccess && (
+                  <div
+                    className="demo-success"
+                    role="status"
+                    style={{ marginTop: "0.5rem" }}
+                  >
+                    {statusSuccess}
+                  </div>
                 )}
               </div>
               <div className="input-group">

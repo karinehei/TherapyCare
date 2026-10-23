@@ -17,6 +17,7 @@ export function PatientDetailPage() {
   const [bookStart, setBookStart] = useState("09:00");
   const [bookEnd, setBookEnd] = useState("10:00");
   const [bookError, setBookError] = useState<string | null>(null);
+  const [bookSuccess, setBookSuccess] = useState<string | null>(null);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["patient", id],
@@ -58,8 +59,14 @@ export function PatientDetailPage() {
       queryClient.invalidateQueries({ queryKey: ["appointments"] });
       setShowBookForm(false);
       setBookError(null);
+      setBookSuccess(
+        import.meta.env.VITE_DEMO_MODE === "true"
+          ? "Demo appointment booked."
+          : "Appointment booked."
+      );
     },
     onError: (err: unknown) => {
+      setBookSuccess(null);
       setBookError(
         err instanceof ApiError ? String(err.detail) : "Failed to book"
       );
@@ -211,6 +218,15 @@ export function PatientDetailPage() {
             )}
           </div>
           <div className="card-body">
+            {bookSuccess && (
+              <div
+                className="demo-success"
+                role="status"
+                style={{ marginBottom: "0.75rem" }}
+              >
+                {bookSuccess}
+              </div>
+            )}
             {showBookForm && canBook && (
               <div
                 className="card"

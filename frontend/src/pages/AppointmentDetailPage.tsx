@@ -18,6 +18,8 @@ export function AppointmentDetailPage() {
   const [autosaveStatus, setAutosaveStatus] = useState<
     "idle" | "saving" | "saved" | "error"
   >("idle");
+  const [cancelError, setCancelError] = useState<string | null>(null);
+  const [cancelSuccess, setCancelSuccess] = useState<string | null>(null);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["appointment", id],
@@ -63,6 +65,34 @@ export function AppointmentDetailPage() {
     },
     [id, data?.session_note, noteMasked, queryClient]
   );
+
+  const canCancel =
+    data?.status === "booked" &&
+    (user?.role === "clinic_admin" ||
+      user?.role === "help_seeker" ||
+      user?.is_staff);
+
+  const cancelMutation = useMutation({
+    mutationFn: () =>
+      api.patch(`/appointments/${id}/`, { status: "cancelled" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointment", id] });
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["patient"] });
+      setCancelError(null);
+      setCancelSuccess(
+        import.meta.env.VITE_DEMO_MODE === "true"
+          ? "Demo appointment cancelled."
+          : "Appointment cancelled."
+      );
+    },
+    onError: (err: unknown) => {
+      setCancelSuccess(null);
+      setCancelError(
+        err instanceof ApiError ? String(err.detail) : "Failed to cancel"
+      );
+    },
+  });
 
   const noteMutation = useMutation({
     mutationFn: (body: string) => saveNote(body),
@@ -185,6 +215,37 @@ export function AppointmentDetailPage() {
               </span>
             </dd>
           </dl>
+          {cancelSuccess && (
+            <div
+              className="demo-success"
+              role="status"
+              style={{ marginTop: "1rem" }}
+            >
+              {cancelSuccess}
+            </div>
+          )}
+          {cancelError && (
+            <div
+              className="input-error-message"
+              style={{ marginTop: "0.5rem" }}
+            >
+              {cancelError}
+            </div>
+          )}
+          {canCancel && (
+            <div style={{ marginTop: "1rem" }}>
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={() => cancelMutation.mutate()}
+                disabled={cancelMutation.isPending}
+              >
+                {cancelMutation.isPending
+                  ? "Cancelling…"
+                  : "Cancel appointment"}
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

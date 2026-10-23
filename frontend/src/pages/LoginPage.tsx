@@ -7,17 +7,21 @@ import {
 } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { loginSchema } from "@/api/schemas";
 import type { LoginForm } from "@/api/schemas";
 import { useAuth } from "@/auth/AuthContext";
 import { ApiError } from "@/api/client";
+import { DEMO_ROLES, isDemoMode, type DemoRole } from "@/demo/config";
 
 export function LoginPage() {
-  const { login } = useAuth();
+  const { login, selectDemoRole } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const queryClient = useQueryClient();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [selecting, setSelecting] = useState(false);
 
   const next =
     searchParams.get("next") ??
@@ -48,6 +52,74 @@ export function LoginPage() {
       }
     }
   };
+
+  const onSelectRole = async (role: DemoRole) => {
+    setServerError(null);
+    setSelecting(true);
+    try {
+      queryClient.clear();
+      await selectDemoRole(role);
+      navigate(next, { replace: true });
+    } catch (err) {
+      setServerError(
+        err instanceof Error ? err.message : "Could not select demo role."
+      );
+    } finally {
+      setSelecting(false);
+    }
+  };
+
+  if (isDemoMode) {
+    return (
+      <div className="page" style={{ maxWidth: 520 }}>
+        <div className="card">
+          <div className="card-header">Choose a demo role</div>
+          <div className="card-body">
+            <p style={{ marginTop: 0, color: "var(--color-text-muted)" }}>
+              Simulated access only — no accounts, passwords, or tokens. Data
+              stays in this browser tab session.
+            </p>
+            {serverError && (
+              <div
+                className="empty-state error"
+                style={{
+                  padding: "0.75rem",
+                  marginBottom: "1rem",
+                  textAlign: "left",
+                }}
+              >
+                {serverError}
+              </div>
+            )}
+            <div className="demo-role-list" role="list">
+              {DEMO_ROLES.map((r) => (
+                <button
+                  key={r.role}
+                  type="button"
+                  role="listitem"
+                  className="demo-role-card"
+                  disabled={selecting}
+                  onClick={() => onSelectRole(r.role)}
+                >
+                  <strong>{r.label}</strong>
+                  <span>{r.description}</span>
+                </button>
+              ))}
+            </div>
+            <p
+              style={{
+                marginTop: "1rem",
+                fontSize: "0.875rem",
+                color: "var(--color-text-muted)",
+              }}
+            >
+              <Link to="/">← Back to search</Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="page" style={{ maxWidth: 400 }}>

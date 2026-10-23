@@ -1,7 +1,15 @@
 /**
  * API client with auth token handling and refresh strategy.
  * Uses localStorage for access/refresh tokens.
+ * In demo mode (VITE_DEMO_MODE=true), requests are handled in-process — no fetch.
  */
+
+import { isDemoMode } from "@/demo/config";
+import { ApiError } from "./errors";
+import type { RequestOptions } from "./types";
+
+export { ApiError } from "./errors";
+export type { RequestOptions } from "./types";
 
 const API_BASE = "/api/v1";
 const AUTH_BASE = "/api/v1/auth";
@@ -9,19 +17,23 @@ const TOKEN_KEY = "therapycare_access";
 const REFRESH_KEY = "therapycare_refresh";
 
 export function getAccessToken(): string | null {
+  if (isDemoMode) return null;
   return localStorage.getItem(TOKEN_KEY);
 }
 
 export function getRefreshToken(): string | null {
+  if (isDemoMode) return null;
   return localStorage.getItem(REFRESH_KEY);
 }
 
 export function setTokens(access: string, refresh: string): void {
+  if (isDemoMode) return;
   localStorage.setItem(TOKEN_KEY, access);
   localStorage.setItem(REFRESH_KEY, refresh);
 }
 
 export function clearTokens(): void {
+  if (isDemoMode) return;
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(REFRESH_KEY);
 }
@@ -29,6 +41,7 @@ export function clearTokens(): void {
 let refreshPromise: Promise<string | null> | null = null;
 
 async function refreshAccessToken(): Promise<string | null> {
+  if (isDemoMode) return null;
   if (refreshPromise) return refreshPromise;
   const refresh = getRefreshToken();
   if (!refresh) return null;
@@ -56,15 +69,15 @@ async function refreshAccessToken(): Promise<string | null> {
   return refreshPromise;
 }
 
-export interface RequestOptions extends RequestInit {
-  skipAuth?: boolean;
-  skipRefresh?: boolean;
-}
-
 export async function apiRequest<T>(
   path: string,
   options: RequestOptions = {}
 ): Promise<T> {
+  if (isDemoMode) {
+    const { demoRequest } = await import("@/demo/handlers");
+    return demoRequest<T>(path, options);
+  }
+
   const { skipAuth, skipRefresh, ...fetchOpts } = options;
   const url = path.startsWith("http") ? path : `${API_BASE}${path}`;
   const headers: Record<string, string> = {
@@ -106,18 +119,6 @@ export async function apiRequest<T>(
     return res.json() as Promise<T>;
   }
   return res.text() as Promise<T>;
-}
-
-export class ApiError extends Error {
-  status: number;
-  detail: unknown;
-
-  constructor(status: number, message: string, detail?: unknown) {
-    super(message);
-    this.name = "ApiError";
-    this.status = status;
-    this.detail = detail;
-  }
 }
 
 export const api = {
