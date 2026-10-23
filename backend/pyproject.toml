@@ -7,22 +7,22 @@ readme = "README.md"
 packages = []
 [tool.poetry.dependencies]
 python = "^3.12"
-Django = "^5.0"
+Django = ">=5,<7"
 django-daisy = "^2.0"
 djangorestframework = "^3.14"
 djangorestframework-simplejwt = "^5.3"
 django-cors-headers = "^4.3"
 psycopg = {extras = ["binary"], version = "^3.1"}
-drf-spectacular = "^0.27"
-django-environ = "^0.11"
-gunicorn = "^22.0"
+drf-spectacular = ">=0.27,<0.31"
+django-environ = ">=0.11,<0.15"
+gunicorn = ">=22,<27"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.0"
+pytest = ">=8,<10"
 pytest-django = "^4.8"
-pytest-cov = "^4.1"
-ruff = "^0.4"
-black = "^24.0"
+pytest-cov = ">=4.1,<8.0"
+ruff = ">=0.4,<0.18"
+black = ">=24,<27"
 # locust = "^2.0"  # optional: pip install locust for load testing
 
 [build-system]
