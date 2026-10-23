@@ -6,24 +6,24 @@ Modular monolith for therapy clinic management: referrals, appointments, patient
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
-## Browser portfolio demo (GitHub Pages)
+## Try the browser demo
 
-**Intended address (after you publish):** [https://karinehei.github.io/TherapyCare/](https://karinehei.github.io/TherapyCare/)
+**Live demo:** [https://karinehei.github.io/TherapyCare/](https://karinehei.github.io/TherapyCare/)
 
-Visitors can explore the UI in the browser with **fictional data and simulated actions** — no install, no Django, no account, no paid services.
+Explore the UI in the browser with fictional data and simulated actions — no install, Django, account, or paid services required. Choose a help-seeker or clinic-admin role and walk through search, referrals, bookings, and the audit log.
 
-| In the demo | Simulated | Full Django app |
-|-------------|-----------|-----------------|
+| In the demo | Simulated | Full application |
+|-------------|-----------|------------------|
 | Therapist search / filters / profiles | Local fixtures | Live PostgreSQL directory |
-| Role selection (help seeker / clinic admin) | UI-only session (not JWT) | Real email/password + JWT |
-| Referrals, status transitions, notes | In-memory + `sessionStorage` | DRF + DB + permissions |
+| Role selection (help seeker / clinic admin) | Browser session only (not JWT) | Real email/password + JWT |
+| Referrals, status transitions, notes | In-memory + `sessionStorage` | DRF + database + permissions |
 | Book / cancel appointments | Local consistency rules | Real booking API |
 | Audit log (clinic admin) | Illustrative events | Real audit trail |
-| Django Admin / Swagger | Screenshots + docs link | `/admin/`, `/api/docs/` |
+| Django Admin / Swagger | Screenshots in the demo | `/admin/`, `/api/docs/` when the stack is running |
 
-Demo mode is enabled **only** at build time with `VITE_DEMO_MODE=true` (exact string). It is never activated as a fallback when the API fails.
+The Pages build is a static frontend only. Demo mode is enabled at build time with `VITE_DEMO_MODE=true` and is never used as a fallback when a real API fails.
 
-### Preview the demo locally
+To run the same demo build locally:
 
 ```bash
 cd frontend
@@ -32,23 +32,7 @@ npm run build:demo
 npm run preview:demo
 ```
 
-Open [http://127.0.0.1:4173/TherapyCare/](http://127.0.0.1:4173/TherapyCare/) (HashRouter: routes look like `/TherapyCare/#/app/referrals`).
-
-Optional browser checks against the built demo (no backend):
-
-```bash
-cd frontend
-npx playwright install chromium   # once
-npm run test:e2e:demo
-```
-
-### Publish to GitHub Pages
-
-1. In the GitHub repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-2. Open **Actions → Deploy Pages demo → Run workflow** (`workflow_dispatch` only; this repo does not auto-deploy Pages).
-3. When the workflow succeeds, open the intended URL above.
-
-The workflow builds only the frontend demo artifact (no backend secrets or `.env` files).
+Then open [http://127.0.0.1:4173/TherapyCare/](http://127.0.0.1:4173/TherapyCare/).
 
 ---
 
